@@ -22,8 +22,8 @@ class SafetyReportSystem {
 
     setupIntroOverlay() {
         const overlay = document.getElementById('introOverlay');
-        const dismissBtn = document.getElementById('introDismiss');
-        if (!overlay || !dismissBtn) return;
+        const startBtn = document.getElementById('introStart');
+        if (!overlay || !startBtn) return;
 
         const INTRO_FLAG = 'safety_intro_seen';
         const shouldShow = sessionStorage.getItem(INTRO_FLAG) !== 'true';
@@ -39,7 +39,7 @@ class SafetyReportSystem {
             document.body.style.overflow = '';
         };
 
-        dismissBtn.addEventListener('click', closeOverlay);
+        startBtn.addEventListener('click', closeOverlay);
 
         overlay.addEventListener('click', (event) => {
             if (event.target === overlay) {
