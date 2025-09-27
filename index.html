@@ -17,159 +17,94 @@
         </div>
     </header>
 
-    <main class="main-content">
-        <div class="container">
-            <div class="progress-indicator">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="step-text">Paso 1 de 6: Selección de Proceso Operacional</div>
+    <div class="container">
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 50%;"></div>
             </div>
-
-            <div class="card">
-                <div class="card-header">
-                   <!-- <h1>¿En qué proceso de la operación ocurrió el evento o peligro?</h1>-->
-                    <h2>¿En qué proceso de la operación ocurrió el evento o peligro?</h2>
-                    <p>Seleccione el proceso o contexto operacional donde se presentó el evento o peligro observado</p>
-                </div>
-                <div class="card-body">
-                    <div id="areaError" class="alert alert-error" style="display: none;">
-                        <strong>Error:</strong> Debe seleccionar un área operacional antes de continuar.
-                    </div>
-
-                    <div class="area-selection">
-                        <div class="area-card" data-area="flight">
-                            <div class="area-icon">✈</div>
-                            <div class="area-title">Operaciones de Vuelo</div>
-                            <div class="area-description">Eventos relacionados con operaciones de vuelo, tripulación técnica, procedimientos de cabina de mando</div>
-                        </div>
-
-                        <div class="area-card" data-area="cabin">
-                            <div class="area-icon">👥</div>
-                            <div class="area-title">Operaciones de Cabina de Pasajeros</div>
-                            <div class="area-description">Servicios a bordo, seguridad de pasajeros, tripulación de cabina</div>
-                        </div>
-
-                        <div class="area-card" data-area="dispatch">
-                            <div class="area-icon">📡</div>
-                            <div class="area-title">Despacho</div>
-                            <div class="area-description">Control de operaciones, planificación de vuelos, coordinación operacional</div>
-                        </div>
-
-                        <div class="area-card" data-area="ground_handling">
-                            <div class="area-icon">🚛</div>
-                            <div class="area-title">Operaciones en Tierra</div>
-                            <div class="area-description">Rampa, equipaje y carga, combustible, limpieza, servicios de apoyo</div>
-                        </div>
-
-                        <div class="area-card" data-area="cargo">
-                            <div class="area-icon">📦</div>
-                            <div class="area-title">Operaciones de Carga</div>
-                            <div class="area-description">Manejo de carga, manipulación, pallets y transporte de mercancías peligrosas</div>
-                        </div>
-
-                        <div class="area-card" data-area="maintenance">
-                            <div class="area-icon">🔧</div>
-                            <div class="area-title">Ingeniería y Mantenimiento</div>
-                            <div class="area-description">Mantenimiento correctivo, inspecciones, reparaciones y fallas técnicas</div>
-                        </div>
-
-                        <div class="area-card" data-area="counters">
-                            <div class="area-icon">🎫</div>
-                            <div class="area-title">Salas de Abordaje y Counters</div>
-                            <div class="area-description">Pasajeros en salas de espera, equipaje y eventos en counters</div>
-                        </div>
-                        <!--
-                        <div class="area-card" data-area="security">
-                            <div class="area-icon">🛡</div>
-                            <div class="area-title">Seguridad</div>
-                            <div class="area-description">Seguridad aeroportuaria, controles, protección, accesos</div>
-                        </div>
-
-                        <div class="area-card" data-area="organization">
-                            <div class="area-icon">🏢</div>
-                            <div class="area-title">Organizacional</div>
-                            <div class="area-description">Eventos relacionados con la gestión y procesos internos de la organización</div>
-                        </div>
-                        -->
-                    </div>
-                </div>
-            </div>
+            <div class="step-text">Paso 1 de 6: Selección de Proceso Operacional</div>
         </div>
-    </main>
 
-    <div class="intro-overlay" id="introOverlay" role="dialog" aria-modal="true" aria-labelledby="introTitle">
-        <div class="intro-dialog" role="document">
-            <header class="intro-header">
-                <p class="intro-kicker">Bienvenido al Sistema de Reportes de Seguridad Operacional</p>
-                <h2 id="introTitle">Completemos tu reporte en 6 pasos</h2>
-                <p class="intro-subtitle">Repasa el flujo general antes de iniciar. Siempre podrás volver a esta guía desde la ayuda.</p>
-            </header>
-            <div class="intro-body">
-                <div class="steps-grid">
-                    <div class="step-item">
-                        <div class="step-icon">
-                            <span class="step-number">1</span>
-                            <span class="step-emoji" aria-hidden="true">🧭</span>
-                        </div>
-                        <div class="step-content">
-                            <h3>Selecciona el proceso operacional</h3>
-                            <p>Ubicamos el contexto donde ocurrió el evento.</p>
-                        </div>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-icon">
-                            <span class="step-number">2</span>
-                            <span class="step-emoji" aria-hidden="true">🎯</span>
-                        </div>
-                        <div class="step-content">
-                            <h3>Define el tipo de evento</h3>
-                            <p>Elegimos la categoría y subtipo más precisa.</p>
-                        </div>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-icon">
-                            <span class="step-number">3</span>
-                            <span class="step-emoji" aria-hidden="true">🧾</span>
-                        </div>
-                        <div class="step-content">
-                            <h3>Confirma los datos clave</h3>
-                            <p>Verificamos fase, condiciones y responsables.</p>
-                        </div>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-icon">
-                            <span class="step-number">4</span>
-                            <span class="step-emoji" aria-hidden="true">✍️</span>
-                        </div>
-                        <div class="step-content">
-                            <h3>Redacta el reporte guiado</h3>
-                            <p>Describe lo sucedido en bloques cortos.</p>
-                        </div>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-icon">
-                            <span class="step-number">5</span>
-                            <span class="step-emoji" aria-hidden="true">🛫</span>
-                        </div>
-                        <div class="step-content">
-                            <h3>Registra la información del vuelo</h3>
-                            <p>Completamos los datos obligatorios y opcionales.</p>
-                        </div>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-icon">
-                            <span class="step-number">6</span>
-                            <span class="step-emoji" aria-hidden="true">🤝</span>
-                        </div>
-                        <div class="step-content">
-                            <h3>Agrega tus datos de contacto</h3>
-                            <p>Aseguramos seguimiento y confidencialidad.</p>
-                        </div>
-                    </div>
+        <div class="card">
+
+
+
+
+            
+            <div class="card-header">
+               <!-- <h1>¿En qué proceso de la operación ocurrió el evento o peligro?</h1>-->
+
+                <h2>¿En qué proceso de la operación ocurrió el evento o peligro?</h2>
+
+                <p>Seleccione el proceso o contexto operacional donde se presentó el evento o peligro observado</p>
+            </div>
+
+
+  
+
+
+
+
+            <div class="card-body">
+                <div id="areaError" class="alert alert-error" style="display: none;">
+                    <strong>Error:</strong> Debe seleccionar un área operacional antes de continuar.
                 </div>
-                <div class="intro-actions">
-                    <button class="btn btn-primary" id="introStart">Iniciar report2</button>
+
+                <div class="area-selection">
+                    <div class="area-card" data-area="flight">
+                        <div class="area-icon">✈</div>
+                        <div class="area-title">Operaciones de Vuelo</div>
+                        <div class="area-description">Eventos relacionados con operaciones de vuelo, tripulación técnica, procedimientos de cabina de mando</div>
+                    </div>
+
+                    <div class="area-card" data-area="cabin">
+                        <div class="area-icon">👥</div>
+                        <div class="area-title">Operaciones de Cabina de Pasajeros</div>
+                        <div class="area-description">Servicios a bordo, seguridad de pasajeros, tripulación de cabina</div>
+                    </div>
+
+                    <div class="area-card" data-area="dispatch">
+                        <div class="area-icon">📡</div>
+                        <div class="area-title">Despacho</div>
+                        <div class="area-description">Control de operaciones, planificación de vuelos, coordinación operacional</div>
+                    </div>
+
+                    <div class="area-card" data-area="ground_handling">
+                        <div class="area-icon">🚛</div>
+                        <div class="area-title">Operaciones en Tierra</div>
+                        <div class="area-description">Rampa, equipaje y carga, combustible, limpieza, servicios de apoyo</div>
+                    </div>
+
+                    <div class="area-card" data-area="cargo">
+                        <div class="area-icon">📦</div>
+                        <div class="area-title">Operaciones de Carga</div>
+                        <div class="area-description">Manejo de carga, manipulación, pallets y transporte de mercancías peligrosas</div>
+                    </div>
+
+                    <div class="area-card" data-area="maintenance">
+                        <div class="area-icon">🔧</div>
+                        <div class="area-title">Ingeniería y Mantenimiento</div>
+                        <div class="area-description">Mantenimiento correctivo, inspecciones, reparaciones y fallas técnicas</div>
+                    </div>
+                    
+                    <div class="area-card" data-area="counters">
+                        <div class="area-icon">🎫</div>
+                        <div class="area-title">Salas de Abordaje y Counters</div>
+                        <div class="area-description">Pasajeros en salas de espera, equipaje y eventos en counters</div>
+                    </div>
+                    <!-- 
+                    <div class="area-card" data-area="security">
+                        <div class="area-icon">🛡</div>
+                        <div class="area-title">Seguridad</div>
+                        <div class="area-description">Seguridad aeroportuaria, controles, protección, accesos</div>
+                    </div>
+
+                    <div class="area-card" data-area="organization">
+                        <div class="area-icon">🏢</div>
+                        <div class="area-title">Organizacional</div>
+                        <div class="area-description">Eventos relacionados con la gestión y procesos internos de la organización</div>
+                    </div>
+                    -->
                 </div>
             </div>
         </div>

@@ -29,82 +29,89 @@
         <!-- Card con datos básicos del vuelo -->
         <div class="card">
             <div class="card-header">
-                <h2>Información del vuelo</h2>
-                <p>Aporta los datos que permitan ubicar el evento en el itinerario y la operación.</p>
+                <h2>Datos Básicos del Evento</h2>
+                <p>Complete la información específica del evento reportado</p>
             </div>
             <div class="card-body">
                 <div class="alert alert-info">
-                    <strong>Importante:</strong> Los campos con <span class="required">*</span> son obligatorios. Los que muestran <span class="optional-badge">Opcional</span> pueden omitirse si no cuentas con la información.
+                    <strong>Información del evento:</strong> Proporcione los datos disponibles. Los campos marcados con * son obligatorios.
                 </div>
 
                 <form id="flightDetailsForm">
-                    <section class="form-section">
-                        <h3>Momento del evento <span class="required">*</span></h3>
-                        <p class="section-description">Registra fecha y hora local para correlacionar con registros de vuelo y meteorología.</p>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="flightDate">Fecha del evento <span class="required">*</span></label>
-                                <input type="date" id="flightDate" name="flightDate" max="" required>
-                                <p class="microcopy">Utiliza el calendario para evitar errores de formato.</p>
-                                <span class="error-message" id="flightDateError"></span>
-                            </div>
+                    <div class="form-grid">
 
-                            <div class="form-group">
-                                <label for="flightTime">Hora del evento (local) <span class="required">*</span></label>
-                                <input type="time" id="flightTime" name="flightTime" placeholder="HH:MM" required>
-                                <p class="microcopy">Si no recuerdas los minutos exactos, aproxima al tramo de 5 minutos más cercano.</p>
-                                <span class="error-message" id="flightTimeError"></span>
-                            </div>
+                         <div class="form-group">
+                            <label for="flightDate">Fecha del Evento <span class="required">*</span></label>
+                            <input type="date" id="flightDate" name="flightDate" max="" required>
+                            <span class="error-message" id="flightDateError"></span>
                         </div>
-                    </section>
 
-                    <section class="form-section">
-                        <h3>Identificadores de vuelo</h3>
-                        <p class="section-description">Estos datos ayudan a vincular el reporte con planes de vuelo y bitácoras.</p>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="flightNumber">Número de vuelo <span class="optional-badge">Opcional</span></label>
-                                <input type="text" id="flightNumber" name="flightNumber"
-                                       placeholder="Ejemplo: AV123"
-                                       maxlength="8">
-                                <p class="microcopy">Formato recomendado: dos letras de aerolínea y de 1 a 4 dígitos.</p>
-                                <span class="error-message" id="flightNumberError"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="aircraftRegistration">Matrícula de la aeronave <span class="optional-badge">Opcional</span></label>
-                                <input type="text" id="aircraftRegistration" name="aircraftRegistration"
-                                       placeholder="Ejemplo: N401AV"
-                                       maxlength="10">
-                                <p class="microcopy">Solo letras y números, sin guiones ni espacios.</p>
-                                <span class="error-message" id="aircraftRegistrationError"></span>
-                            </div>
+                        <div class="form-group">
+                            <label for="flightTime">Hora del Evento (Local) <span class="required">*</span></label>
+                            <input type="time" id="flightTime" name="flightTime" placeholder="HH:MM" required>
+                            <span class="error-message" id="flightTimeError"></span>
                         </div>
-                    </section>
-
-                    <section class="form-section">
-                        <h3>Ruta y base de operación</h3>
-                        <p class="section-description">Incluye los aeropuertos para comprender el contexto operacional.</p>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="origin">Aeropuerto de origen <span class="optional-badge">Opcional</span></label>
-                                <input type="text" id="origin" name="origin"
-                                       placeholder="Código IATA: BOG, MDE, CLO..."
-                                       maxlength="3">
-                                <p class="microcopy">Se aceptan códigos IATA en mayúsculas.</p>
-                                <span class="error-message" id="originError"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="destination">Aeropuerto de destino <span class="optional-badge">Opcional</span></label>
-                                <input type="text" id="destination" name="destination"
-                                       placeholder="Código IATA: BOG, MDE, CLO..."
-                                       maxlength="3">
-                                <p class="microcopy">Se aceptan códigos IATA en mayúsculas.</p>
-                                <span class="error-message" id="destinationError"></span>
-                            </div>
+                        <div class="form-group">
+                            <label for="flightNumber">Número de Vuelo </label>
+                            <input type="text" id="flightNumber" name="flightNumber"
+                                   placeholder="Ejemplo: AV123" 
+                                   pattern="^[A-Z]{2}[0-9]{1,4}$"
+                                   maxlength="8">
+                            <span class="error-message" id="flightNumberError"></span>
                         </div>
-                    </section>
+
+                        <div class="form-group">
+                            <label for="aircraftRegistration">Matrícula de la Aeronave </label>
+                            <input type="text" id="aircraftRegistration" name="aircraftRegistration"
+                                   placeholder="Ejemplo: N401AV" 
+                                   maxlength="10">
+                            <span class="error-message" id="aircraftRegistrationError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="origin">Aeropuerto de Origen </label>
+                            <input type="text" id="origin" name="origin" 
+                                   placeholder="Código IATA: BOG, MDE, CLO..." 
+                                   pattern="^[A-Z]{3}$"
+                                   maxlength="3">
+                            <span class="error-message" id="originError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="destination">Aeropuerto de Destino </label>
+                            <input type="text" id="destination" name="destination" 
+                                   placeholder="Código IATA: BOG, MDE, CLO..." 
+                                   pattern="^[A-Z]{3}$"
+                                   maxlength="3">
+                            <span class="error-message" id="destinationError"></span>
+                        </div>
+
+                       
+
+                       <!--
+
+                        <div class="form-group">
+                            <label for="flightPhase">Fase de Vuelo</label>
+                            <select id="flightPhase" name="flightPhase">
+                                <option value="">Seleccione una fase</option>
+                                <option value="pre_flight">Pre-vuelo</option>
+                                <option value="taxi_out">Rodaje de salida</option>
+                                <option value="takeoff">Despegue</option>
+                                <option value="climb">Ascenso</option>
+                                <option value="cruise">Crucero</option>
+                                <option value="descent">Descenso</option>
+                                <option value="approach">Aproximación</option>
+                                <option value="landing">Aterrizaje</option>
+                                <option value="taxi_in">Rodaje de llegada</option>
+                                <option value="post_flight">Post-vuelo</option>
+                                <option value="ground">En tierra</option>
+                            </select>
+                        </div>
+
+                        -->
+
+                        
+                    </div>
 
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary" id="backBtn">Regresar</button>
@@ -125,8 +132,8 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             init();
-            const runValidation = setupFlightValidation();
-            setupButtons(runValidation);
+            setupFlightValidation();
+            setupButtons();
             setTodayAsDefault();
         });
 
@@ -148,78 +155,53 @@
         // --- Validación y recolección de datos ---
         function setupFlightValidation() {
             const requiredFields = [
-                { id: 'flightDate', validator: value => value !== '', message: 'La fecha es obligatoria' },
-                { id: 'flightTime', validator: value => /^([01]\d|2[0-3]):[0-5]\d$/.test(value), message: 'Formato HH:MM requerido' }
+                { id: 'flightNumber', pattern: /^[A-Z]{2}[0-9]{1,4}$/i, message: 'Formato: XX123 (2 letras + números)' },
+                { id: 'aircraftRegistration', pattern: /^[A-Z0-9]+$/i, message: 'Solo se admiten letras mayúsculas y números' },
+                { id: 'origin', pattern: /^[A-Z]{3}$/i, message: 'Código IATA de 3 letras' },
+                { id: 'destination', pattern: /^[A-Z]{3}$/i, message: 'Código IATA de 3 letras' },
+                { id: 'flightDate', pattern: /.+/, message: 'Fecha requerida' }
             ];
 
             const optionalFields = [
-                { id: 'flightNumber', validator: value => /^[A-Z]{2}\d{1,4}$/.test(value), message: 'Formato: XX123 (2 letras + números)' },
-                { id: 'aircraftRegistration', validator: value => /^[A-Z0-9]+$/.test(value), message: 'Solo letras mayúsculas y números' },
-                { id: 'origin', validator: value => /^[A-Z]{3}$/.test(value), message: 'Código IATA de 3 letras' },
-                { id: 'destination', validator: value => /^[A-Z]{3}$/.test(value), message: 'Código IATA de 3 letras' }
+                { id: 'runway', pattern: /^[0-9]{2}[LRC]?$/i, message: 'Formato: 13L, 31R, 07' }
             ];
 
-            function attachValidation(field, isRequired = false) {
-                const input = document.getElementById(field.id);
-                const errorSpan = document.getElementById(`${field.id}Error`);
-                if (!input || !errorSpan) return () => true;
+            function setupFieldValidation(fields, required = false) {
+                fields.forEach(field => {
+                    const input = document.getElementById(field.id);
+                    const errorSpan = document.getElementById(field.id + 'Error');
+                    if (!input || !errorSpan) return;
 
-                const validate = () => {
-                    let value = input.value.trim();
-                    if (input.type === 'text') {
-                        value = value.toUpperCase();
+                    const validate = () => {
+                        let value = input.value.trim();
+                        if (input.type === 'text' && value) value = value.toUpperCase();
                         input.value = value;
-                    }
 
-                    if (!value && !isRequired) {
-                        errorSpan.textContent = '';
-                        errorSpan.style.display = 'none';
+                        if (!required && !value) { errorSpan.textContent=''; errorSpan.style.display='none'; input.classList.remove('invalid'); return true; }
+                        if (required && !value) { errorSpan.textContent='Campo requerido'; errorSpan.style.display='block'; input.classList.add('invalid'); return false; }
+                        if (value && !field.pattern.test(value)) { errorSpan.textContent=field.message; errorSpan.style.display='block'; input.classList.add('invalid'); return false; }
+
+                        errorSpan.textContent='';
+                        errorSpan.style.display='none';
                         input.classList.remove('invalid');
                         return true;
-                    }
+                    };
 
-                    const isValid = field.validator(value);
-                    if (!isValid) {
-                        errorSpan.textContent = isRequired && !value ? 'Campo requerido' : field.message;
-                        errorSpan.style.display = 'block';
-                        input.classList.add('invalid');
-                        return false;
-                    }
-
-                    errorSpan.textContent = '';
-                    errorSpan.style.display = 'none';
-                    input.classList.remove('invalid');
-                    return true;
-                };
-
-                input.addEventListener('input', validate);
-                input.addEventListener('blur', validate);
-                return validate;
+                    input.addEventListener('input', validate);
+                });
             }
 
-            const validators = [];
-            requiredFields.forEach(field => validators.push(attachValidation(field, true)));
-            optionalFields.forEach(field => validators.push(attachValidation(field, false)));
-
-            return () => validators.every(fn => fn());
+            setupFieldValidation(requiredFields, true);
+            setupFieldValidation(optionalFields, false);
         }
 
         // --- Botones ---
-        function setupButtons(runValidation) {
+        function setupButtons() {
             const continueBtn = document.getElementById('continueBtn');
             const backBtn = document.getElementById('backBtn');
-            const form = document.getElementById('flightDetailsForm');
-
-            const toggleContinue = () => {
-                const valid = runValidation();
-                continueBtn.disabled = !valid;
-            };
-
-            form.addEventListener('input', toggleContinue);
-            setTimeout(toggleContinue, 50);
+            continueBtn.disabled = false; // solo ejemplo: activamos directamente
 
             continueBtn.addEventListener('click', () => {
-                if (continueBtn.disabled) return;
                 window.location.href = 'reporter_info.html';
             });
             backBtn.addEventListener('click', () => {

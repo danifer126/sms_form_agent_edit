@@ -29,45 +29,27 @@
         <!-- Card: Información del Reporte -->
         <div class="card">
             <div class="card-header">
-                <h2>Narrativa guiada del reporte</h2>
-                <p>Responde cada bloque para construir un relato claro y accionable sobre el evento.</p>
+                <h2>Información del Reporte</h2>
+                <p>Complete los detalles específicos del evento de seguridad operacional reportado</p>
             </div>
             <div class="card-body">
                 <div class="alert alert-info">
-                    <strong>Consejo:</strong> Usa lenguaje concreto y evita siglas poco comunes para facilitar el análisis.
+                    <strong>Importante:</strong> Proporcione la mayor cantidad de detalles posible.
                 </div>
                 <form id="reportDetailsForm">
-                    <div class="guided-blocks">
-                        <div class="guided-block">
-                            <h3>1. Resumen ejecutivo <span class="required">*</span></h3>
-                            <p>Describe en una frase qué ocurrió y su impacto inmediato.</p>
-                            <input type="text" id="reportSummary" name="reportSummary" maxlength="160"
-                                   placeholder="Ejemplo: Aproximación inestable obligó a ejecutar go-around en BOG.">
-                            <span class="error-message" id="reportSummaryError"></span>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="reportTitle">Título del Reporte <span class="required">*</span></label>
+                            <input type="text" id="reportTitle" name="reportTitle" maxlength="150"
+                                   placeholder="Ejemplo: Incidente durante aproximación en condiciones meteorológicas adversas">
+                            <span class="error-message" id="reportTitleError"></span>
                         </div>
 
-                        <div class="guided-block">
-                            <h3>2. Desarrollo cronológico <span class="required">*</span></h3>
-                            <p>Detalla la secuencia de eventos, incluyendo decisiones, comunicaciones y condiciones relevantes.</p>
-                            <textarea id="reportTimeline" name="reportTimeline" rows="7" minlength="80"
-                                      placeholder="Relata paso a paso lo sucedido desde el inicio hasta el cierre del evento."></textarea>
-                            <span class="error-message" id="reportTimelineError"></span>
-                        </div>
-
-                        <div class="guided-block">
-                            <h3>3. Factores contribuyentes <span class="required">*</span></h3>
-                            <p>Indica elementos técnicos, humanos o ambientales que influyeron en el evento.</p>
-                            <textarea id="reportFactors" name="reportFactors" rows="5" minlength="40"
-                                      placeholder="Ejemplo: Condiciones meteorológicas IMC, fatiga en tripulación, NOTAM no actualizado."></textarea>
-                            <span class="error-message" id="reportFactorsError"></span>
-                        </div>
-
-                        <div class="guided-block">
-                            <h3>4. Acciones y recomendaciones <span class="optional-badge">Opcional</span></h3>
-                            <p>Comparte acciones tomadas, lecciones aprendidas o sugerencias para mitigar recurrencias.</p>
-                            <textarea id="reportActions" name="reportActions" rows="4" maxlength="600"
-                                      placeholder="Acciones inmediatas, seguimiento requerido o propuestas de mejora."></textarea>
-                            <span class="error-message" id="reportActionsError"></span>
+                        <div class="form-group full-width">
+                            <label for="reportDescription">Descripción Detallada del Evento <span class="required">*</span></label>
+                            <textarea id="reportDescription" name="reportDescription" rows="12" minlength="20"
+                                      placeholder="Describa detalladamente el evento ocurrido"></textarea>
+                            <span class="error-message" id="reportDescriptionError"></span>
                         </div>
                     </div>
                 </form>
@@ -115,63 +97,35 @@
         document.addEventListener('DOMContentLoaded', init);
 
         function setupValidation() {
+            const titleInput = document.getElementById('reportTitle');
+            const descInput = document.getElementById('reportDescription');
             const continueBtn = document.getElementById('continueBtn');
-            const fields = [
-                { id: 'reportSummary', min: 20, label: 'Resumen ejecutivo' },
-                { id: 'reportTimeline', min: 80, label: 'Desarrollo cronológico' },
-                { id: 'reportFactors', min: 40, label: 'Factores contribuyentes' }
-            ];
 
-            const optionalFields = [
-                { id: 'reportActions', min: 0, label: 'Acciones y recomendaciones' }
-            ];
-
-            function validateField(input, minLength, label, optional = false) {
-                const value = input.value.trim();
-                const errorSpan = document.getElementById(`${input.id}Error`);
-
-                if (!optional && value.length < minLength) {
-                    errorSpan.textContent = value.length === 0 ? `${label} es obligatorio` : `Mínimo ${minLength} caracteres`;
-                    errorSpan.style.display = 'block';
+            function validateField(input, minLength=1) {
+                const errorSpan = document.getElementById(input.id + 'Error');
+                if(input.value.trim().length < minLength){
+                    errorSpan.textContent = minLength === 1 ? 'Campo requerido' : `Mínimo ${minLength} caracteres`;
                     input.classList.add('invalid');
                     return false;
+                } else {
+                    errorSpan.textContent = '';
+                    input.classList.remove('invalid');
+                    return true;
                 }
-
-                if (optional && value && value.length < minLength) {
-                    errorSpan.textContent = `Mínimo ${minLength} caracteres`;
-                    errorSpan.style.display = 'block';
-                    input.classList.add('invalid');
-                    return false;
-                }
-
-                errorSpan.textContent = '';
-                errorSpan.style.display = 'none';
-                input.classList.remove('invalid');
-                return true;
             }
 
             function validateForm() {
-                const requiredValid = fields.every(field => {
-                    const element = document.getElementById(field.id);
-                    return validateField(element, field.min, field.label);
-                });
+                const validTitle = validateField(titleInput);
+                const validDesc = validateField(descInput, 20);
+                const isValid = validTitle && validDesc;
 
-                optionalFields.forEach(field => {
-                    const element = document.getElementById(field.id);
-                    validateField(element, field.min, field.label, true);
-                });
-
-                continueBtn.disabled = !requiredValid;
-                continueBtn.style.opacity = requiredValid ? '1' : '0.5';
-                continueBtn.style.cursor = requiredValid ? 'pointer' : 'not-allowed';
+                continueBtn.disabled = !isValid;
+                continueBtn.style.opacity = isValid ? '1' : '0.5';
+                continueBtn.style.cursor = isValid ? 'pointer' : 'not-allowed';
             }
 
-            [...fields, ...optionalFields].forEach(({ id }) => {
-                const element = document.getElementById(id);
-                element.addEventListener('input', validateForm);
-                element.addEventListener('blur', validateForm);
-            });
-
+            titleInput.addEventListener('input', validateForm);
+            descInput.addEventListener('input', validateForm);
             setTimeout(validateForm, 50);
         }
 
@@ -226,21 +180,11 @@
             const continueBtn = document.getElementById('continueBtn');
             backBtn.addEventListener('click', () => window.history.back());
             continueBtn.addEventListener('click', () => {
-                const summary = document.getElementById('reportSummary');
-                const timeline = document.getElementById('reportTimeline');
-                const factors = document.getElementById('reportFactors');
-                const actions = document.getElementById('reportActions');
-
-                if (continueBtn.disabled) return;
-
+                const titleInput = document.getElementById('reportTitle');
+                const descInput = document.getElementById('reportDescription');
+                if(!titleInput.value.trim() || descInput.value.trim().length<20){ return; }
                 const existingData = JSON.parse(sessionStorage.getItem('safetyReportData')||'{}');
-                const narrative = {
-                    summary: summary.value.trim(),
-                    timeline: timeline.value.trim(),
-                    factors: factors.value.trim(),
-                    actions: actions.value.trim()
-                };
-                const newData = { ...existingData, report: narrative };
+                const newData = {...existingData, report:{title:titleInput.value, description:descInput.value}};
                 sessionStorage.setItem('safetyReportData', JSON.stringify(newData));
                 window.location.href='flight_info_mandatory.html';
             });

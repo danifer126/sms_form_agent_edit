@@ -7,7 +7,6 @@ class SafetyReportSystem {
     init() {
         this.bindEvents();
         this.updateProgress(16.67);
-        this.setupIntroOverlay();
     }
 
     bindEvents() {
@@ -17,40 +16,6 @@ class SafetyReportSystem {
                 this.selectArea(card);
                 this.proceedToSpecificForm(); // 🔹 redirige al instante
             });
-        });
-    }
-
-    setupIntroOverlay() {
-        const overlay = document.getElementById('introOverlay');
-        const startBtn = document.getElementById('introStart');
-        if (!overlay || !startBtn) return;
-
-        const INTRO_FLAG = 'safety_intro_seen';
-        const shouldShow = sessionStorage.getItem(INTRO_FLAG) !== 'true';
-
-        if (shouldShow) {
-            overlay.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-
-        const closeOverlay = () => {
-            overlay.classList.remove('show');
-            sessionStorage.setItem(INTRO_FLAG, 'true');
-            document.body.style.overflow = '';
-        };
-
-        startBtn.addEventListener('click', closeOverlay);
-
-        overlay.addEventListener('click', (event) => {
-            if (event.target === overlay) {
-                closeOverlay();
-            }
-        });
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && overlay.classList.contains('show')) {
-                closeOverlay();
-            }
         });
     }
 
