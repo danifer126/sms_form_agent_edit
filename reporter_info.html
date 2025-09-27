@@ -27,53 +27,71 @@
 
         <div class="card">
             <div class="card-header">
-                <h2>Información del Reportante</h2>
-                <p>Complete los datos de la persona que reporta el evento de seguridad operacional</p>
+                <h2>Información del reportante</h2>
+                <p>Estos datos se usan únicamente para aclaraciones y seguimiento dentro del programa de seguridad operacional.</p>
             </div>
             <div class="card-body">
                 <div class="alert alert-info">
-                    <strong>Confidencialidad:</strong> La información proporcionada será tratada según la politica de confidencialiad y no punitividad.
-                     de la organización.
+                    <strong>Confidencialidad:</strong> Tu reporte se gestiona bajo políticas de no represalia y resguardo de datos personales.
                 </div>
 
                 <form id="reporterForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="firstName">Nombres <span class="required">*</span></label>
-                            <input type="text" id="firstName" name="firstName" required placeholder="Juan" pattern="^[A-Za-zÀ-ÿ\s]+$">
-                            <span class="error-message" id="firstNameError"></span>
+                    <section class="form-section">
+                        <h3>Identificación personal</h3>
+                        <p class="section-description">Indica tu nombre tal como aparece en registros internos para facilitar el contacto.</p>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="firstName">Nombres <span class="required">*</span></label>
+                                <input type="text" id="firstName" name="firstName" required placeholder="Juan Carlos">
+                                <p class="microcopy">Incluye segundo nombre si aplica.</p>
+                                <span class="error-message" id="firstNameError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Apellidos <span class="required">*</span></label>
+                                <input type="text" id="lastName" name="lastName" required placeholder="Pérez Gómez">
+                                <p class="microcopy">Usa solo letras y espacios.</p>
+                                <span class="error-message" id="lastNameError"></span>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="lastName">Apellidos <span class="required">*</span></label>
-                            <input type="text" id="lastName" name="lastName" required placeholder="Pérez" pattern="^[A-Za-zÀ-ÿ\s]+$">
-                            <span class="error-message" id="lastNameError"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Correo Electrónico <span class="required">*</span></label>
-                            <input type="email" id="email" name="email" required placeholder="correo@ejemplo.com">
-                            <span class="error-message" id="emailError"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Área a la que pertenezco</label>
-                            <input type="text" id="area_reportante" name="area_reportante" maxlength="40">
-                            <span class="error-message" id="areaError"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Base a la que pertenezco</label>
-                            <input type="text" id="base_reportante" name="base_reportante" pattern="^[A-Z]{3}$" 
-                            placeholder="Código IATA: BOG, MDE, CLO..."  maxlength="3" style="text-transform: uppercase;">
-                            <span class="error-message" id="baseError"></span>
-                        </div>
+                    </section>
 
-                        <!--
-                        <div class="form-group">
-                            <label for="phone">Teléfono <span class="required">*</span></label>
-                            <input type="tel" id="phone" name="phone" required placeholder="3001234567" pattern="^\d{7,15}$">
-                            <span class="error-message" id="phoneError"></span>
+                    <section class="form-section">
+                        <h3>Contacto preferido</h3>
+                        <p class="section-description">Definiremos cómo avisarte sobre avances o aclaraciones del reporte.</p>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="email">Correo electrónico <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" required placeholder="nombre.apellido@empresa.com">
+                                <p class="microcopy">Recibirás un acuse de recibido y futuras comunicaciones en esta dirección.</p>
+                                <span class="error-message" id="emailError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Teléfono móvil <span class="optional-badge">Opcional</span></label>
+                                <input type="tel" id="phone" name="phone" placeholder="3001234567" maxlength="15">
+                                <p class="microcopy">Incluye solo números, sin espacios ni guiones.</p>
+                                <span class="error-message" id="phoneError"></span>
+                            </div>
                         </div>
-                    -->
+                    </section>
 
-                    </div>
+                    <section class="form-section">
+                        <h3>Contexto en la organización</h3>
+                        <p class="section-description">Estos campos nos ayudan a segmentar tendencias por áreas operativas.</p>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="area_reportante">Área o dependencia <span class="optional-badge">Opcional</span></label>
+                                <input type="text" id="area_reportante" name="area_reportante" maxlength="40" placeholder="Ejemplo: Operaciones de vuelo">
+                                <p class="microcopy">Puedes indicar tu cargo o la dependencia a la que perteneces.</p>
+                                <span class="error-message" id="area_reportanteError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="base_reportante">Base o estación <span class="optional-badge">Opcional</span></label>
+                                <input type="text" id="base_reportante" name="base_reportante" maxlength="3" placeholder="Código IATA: BOG, MDE, CLO..." style="text-transform: uppercase;">
+                                <p class="microcopy">Usa el código IATA de tres letras de tu base principal.</p>
+                                <span class="error-message" id="base_reportanteError"></span>
+                            </div>
+                        </div>
+                    </section>
                 </form>
                 <div class="form-actions">
                     <button type="button" class="btn" id="continueBtn" disabled>Finalizar</button>
@@ -133,52 +151,85 @@
             }
 
             setupFieldValidation() {
-                const fields = [
-                    { id: 'firstName', name: 'Nombre', pattern: /^[A-Za-zÀ-ÿ\s]+$/ },
-                    { id: 'base_reportante', name: 'Base', pattern: /^[A-Z]{3}$/ },
-                    { id: 'lastName', name: 'Apellido', pattern: /^[A-Za-zÀ-ÿ\s]+$/ },
-                    { id: 'email', name: 'Correo', pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
-                    { id: 'phone', name: 'Teléfono', pattern: /^\d{7,15}$/ }
+                this.fieldConfigs = [
+                    { id: 'firstName', label: 'Nombres', pattern: /^[A-Za-zÀ-ÿ\s]+$/, required: true },
+                    { id: 'lastName', label: 'Apellidos', pattern: /^[A-Za-zÀ-ÿ\s]+$/, required: true },
+                    { id: 'email', label: 'Correo electrónico', pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, required: true },
+                    { id: 'phone', label: 'Teléfono móvil', pattern: /^\d{7,15}$/, required: false },
+                    { id: 'area_reportante', label: 'Área o dependencia', minLength: 3, required: false },
+                    { id: 'base_reportante', label: 'Base o estación', pattern: /^[A-Z]{3}$/, required: false }
                 ];
 
-                fields.forEach(field => {
-                    const input = document.getElementById(field.id);
-                    const errorSpan = document.getElementById(field.id + 'Error');
+                this.fieldConfigs.forEach(config => {
+                    const input = document.getElementById(config.id);
+                    if (!input) return;
 
-                    if (!input || !errorSpan) return;
-
-                    const validate = () => {
-                        const value = input.value.trim();
-                        if (!value) {
-                            errorSpan.textContent = `${field.name} requerido`;
-                            errorSpan.style.display = 'block';
-                            input.classList.add('invalid');
-                            return false;
-                        }
-                        if (!field.pattern.test(value)) {
-                            errorSpan.textContent = `Formato inválido`;
-                            errorSpan.style.display = 'block';
-                            input.classList.add('invalid');
-                            return false;
-                        }
-                        errorSpan.textContent = '';
-                        errorSpan.style.display = 'none';
-                        input.classList.remove('invalid');
-                        return true;
+                    const handleValidation = () => {
+                        this.validateSingleField(config);
+                        this.validateForm();
                     };
 
-                    input.addEventListener('input', () => {
-                        validate();
-                        this.validateForm();
-                    });
-                    input.addEventListener('blur', validate);
+                    if (config.id === 'phone') {
+                        input.addEventListener('input', () => {
+                            input.value = input.value.replace(/\D/g, '');
+                            handleValidation();
+                        });
+                    } else {
+                        input.addEventListener('input', handleValidation);
+                    }
+                    input.addEventListener('blur', () => this.validateSingleField(config));
                 });
+            }
+
+            validateSingleField(config) {
+                const input = document.getElementById(config.id);
+                const errorSpan = document.getElementById(`${config.id}Error`);
+                if (!input || !errorSpan) return true;
+
+                let value = input.value.trim();
+                if (config.id === 'base_reportante') {
+                    value = value.toUpperCase();
+                    input.value = value;
+                }
+
+                if (!value) {
+                    if (config.required) {
+                        errorSpan.textContent = `${config.label} es obligatorio`;
+                        errorSpan.style.display = 'block';
+                        input.classList.add('invalid');
+                        return false;
+                    }
+
+                    errorSpan.textContent = '';
+                    errorSpan.style.display = 'none';
+                    input.classList.remove('invalid');
+                    return true;
+                }
+
+                if (config.minLength && value.length < config.minLength) {
+                    errorSpan.textContent = `Mínimo ${config.minLength} caracteres`;
+                    errorSpan.style.display = 'block';
+                    input.classList.add('invalid');
+                    return false;
+                }
+
+                if (config.pattern && !config.pattern.test(value)) {
+                    errorSpan.textContent = 'Formato inválido';
+                    errorSpan.style.display = 'block';
+                    input.classList.add('invalid');
+                    return false;
+                }
+
+                errorSpan.textContent = '';
+                errorSpan.style.display = 'none';
+                input.classList.remove('invalid');
+                return true;
             }
 
             bindEvents() {
                 const form = document.getElementById('reporterForm');
                 if (form) {
-                    const inputs = form.querySelectorAll('input[required]');
+                    const inputs = form.querySelectorAll('input');
                     inputs.forEach(input => {
                         input.addEventListener('input', () => this.validateForm());
                     });
@@ -190,17 +241,9 @@
             }
 
             validateForm() {
-                const form = document.getElementById('reporterForm');
-                if (!form) return false;
+                if (!this.fieldConfigs) return false;
 
-                let isValid = true;
-                const requiredInputs = form.querySelectorAll('input[required]');
-                
-                requiredInputs.forEach(input => {
-                    if (!input.value.trim() || input.classList.contains('invalid')) {
-                        isValid = false;
-                    }
-                });
+                const isValid = this.fieldConfigs.every(config => this.validateSingleField(config));
 
                 const continueBtn = document.getElementById('continueBtn');
                 if (continueBtn) continueBtn.disabled = !isValid;

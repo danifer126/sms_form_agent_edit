@@ -23,6 +23,7 @@ body {
     color: var(--dark-gray);
     background: linear-gradient(135deg, var(--light-gray) 0%, #e5e7eb 100%);
     min-height: 100vh;
+    position: relative;
 }
 
 .header {
@@ -73,6 +74,10 @@ body {
     margin-bottom: 2rem;
 }
 
+.card.intro-card {
+    max-width: 640px;
+}
+
 .card-header {
     background: linear-gradient(135deg, var(--dark-gray) 0%, #374151 100%);
     color: var(--white);
@@ -107,6 +112,23 @@ body {
     flex-direction: column;
 }
 
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--dark-gray);
+}
+
+.form-section p.section-description {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+}
+
 .form-group.full-width {
     grid-column: 1 / -1;
 }
@@ -120,6 +142,25 @@ label {
 
 .required {
     color: var(--accent-red);
+}
+
+.optional-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--light-gray);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-gray);
+    margin-left: 0.5rem;
+}
+
+.microcopy {
+    font-size: 0.78rem;
+    color: var(--text-gray);
+    margin-top: 0.35rem;
 }
 
 input, select, textarea {
@@ -200,6 +241,64 @@ textarea {
     font-size: 0.85rem;
     color: var(--text-gray);
     line-height: 1.4;
+}
+
+.area-card .area-description {
+    margin-bottom: 1rem;
+}
+
+.subtype-panel {
+    border-top: 1px solid var(--border-gray);
+    margin-top: 1rem;
+    padding-top: 1rem;
+    display: none;
+    text-align: left;
+}
+
+.subtype-panel.active {
+    display: block;
+}
+
+.subtype-panel h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--dark-gray);
+}
+
+.subtype-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+}
+
+.subtype-option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    border: 1px solid var(--border-gray);
+    border-radius: 8px;
+    padding: 0.75rem;
+    cursor: pointer;
+    background: var(--white);
+    font-size: 0.85rem;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.subtype-option:hover {
+    border-color: var(--secondary-blue);
+    box-shadow: 0 3px 12px rgba(59,130,246,0.15);
+}
+
+.subtype-option.selected {
+    border-color: var(--accent-red);
+    box-shadow: 0 0 0 2px rgba(220,38,38,0.15);
+}
+
+.subtype-option span {
+    font-weight: 600;
+    color: var(--dark-gray);
 }
 
 .btn {
@@ -312,5 +411,160 @@ textarea {
 
 input.invalid {
     border-color: red;
+}
+
+/* Intro overlay */
+.intro-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.intro-overlay.show {
+    display: flex;
+}
+
+.intro-dialog {
+    background: var(--white);
+    border-radius: 16px;
+    max-width: 720px;
+    width: min(100%, 720px);
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.45);
+    overflow: hidden;
+    animation: modalFadeIn 0.3s ease;
+}
+
+.intro-dialog header {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+    color: var(--white);
+    padding: 1.75rem 2rem;
+}
+
+.intro-dialog header h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.intro-dialog header p {
+    margin-top: 0.35rem;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.intro-dialog .intro-body {
+    padding: 2rem;
+}
+
+.steps-list {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.step-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: rgba(59,130,246,0.15);
+    color: var(--primary-blue);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.step-text strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--dark-gray);
+}
+
+.step-text span {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+}
+
+.intro-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-secondary {
+    background: var(--text-gray);
+}
+
+.btn-secondary:hover {
+    background: #111827;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Guided narrative blocks */
+.guided-blocks {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.guided-block {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.guided-block h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+
+.guided-block p {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    margin-bottom: 0.75rem;
+}
+
+.guided-block textarea,
+.guided-block input {
+    border-color: rgba(59,130,246,0.35);
+}
+
+.guided-block textarea.invalid,
+.guided-block input.invalid {
+    border-color: var(--accent-red);
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+}
+
+@media (max-width: 768px) {
+    .intro-dialog header,
+    .intro-dialog .intro-body {
+        padding: 1.5rem;
+    }
+
+    .step-item {
+        align-items: center;
+    }
 }
 
