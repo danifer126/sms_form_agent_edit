@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Combustible Contaminado - Operaciones de Tanqueo</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">⛽</div>
+            <div>
+                <h1>Combustible Contaminado</h1>
+                <p>Registro detallado de eventos relacionados con combustible contaminado y mala calidad</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Combustible Contaminado</div>
+        </div>
+
+        <form id="fuelContaminationForm">
+            <!-- Información del Evento -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Detalles del Combustible Contaminado</h2>
+                    <p>Complete la información específica sobre el evento de combustible contaminado o de mala calidad</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <p><strong>Tipo de evento:</strong> Combustible contaminado - mala calidad</p>
+                        <p style="color: var(--text-gray); font-size: 0.9em; margin-top: 8px;">
+                            Este formulario capturará los detalles específicos sobre la detección de combustible contaminado o de mala calidad durante las operaciones de tanqueo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('fuelOperationsData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Combustible Contaminado:', data);
+            }
+
+            document.getElementById('fuelContaminationForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const fuelData = {
+                    eventType: 'combustible_contaminado',
+                    eventDescription: 'Combustible contaminado - mala calidad'
+                };
+
+                const existingData = JSON.parse(sessionStorage.getItem('fuelOperationsData') || '{}');
+                const combinedData = { ...existingData, fuelContaminationDetails: fuelData };
+                
+                sessionStorage.setItem('fuelOperationsData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

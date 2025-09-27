@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Específico - Operaciones de Vuelo</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Estilos para la selección de áreas en grid normal */
+        .area-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .area-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .area-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .area-card.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+
+        .area-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .area-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Estilos para el modal/pop-up */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .close-button:hover {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 1rem;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+            color: #374151;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .modal-btn-cancel {
+            background: var(--text-gray);
+            color: var(--white);
+        }
+
+        .modal-btn-cancel:hover {
+            opacity: 0.9;
+        }
+
+        .modal-btn-primary {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .modal-btn-primary:hover:not(:disabled) {
+            background: var(--primary-blue-hover);
+        }
+
+        .modal-btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* Animación de entrada */
+        .modal-content {
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Sistema de Reportes de Seguridad Operacional</h1>
+                <p>Registro de Eventos y Peligros</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="step-text">Paso 2 de 6: Detalle del Evento</div>
+        </div>
+
+        <!-- Formulario específico -->
+        <div class="card">
+            <div class="card-header">
+                <h2>¿Qué tipo de evento ocurrió durante la Operación de Vuelo?</h2>
+                <p>Seleccione la opción que mejor describe lo que desea reportar</p>
+            </div>
+
+            <div class="card-body">
+                <div id="eventTypeError" class="alert alert-error" style="display: none;">
+                    <strong>Error:</strong> Debe seleccionar un tipo de evento antes de continuar.
+                </div>
+
+                <div class="area-selection" id="areaSelection">
+                    <div class="area-card" data-event="tcas_gpws" title="Alertas de proximidad, tráfico aéreo y terreno">
+                        <div class="area-icon">⚠️</div>
+                        <div class="area-title">Advertencias TCAS/GPWS</div>
+                    </div>
+
+                    <div class="area-card" data-event="unstable_approach" title="Aproximación inestable o sobrepaso">
+                        <div class="area-icon">🛬</div>
+                        <div class="area-title">Aproximación y Contacto Anormal con la Pista</div>
+                    </div>
+
+                    <div class="area-card" data-event="adverse_weather" title="Condiciones meteorológicas adversas">
+                        <div class="area-icon">🌩️</div>
+                        <div class="area-title">Condiciones Meteorológicas</div>
+                    </div>
+
+                    <div class="area-card" data-event="bird_strike" title="Bird strikes durante operaciones">
+                        <div class="area-icon">🐦</div>
+                        <div class="area-title">Impacto con Aves</div>
+                    </div>
+
+                    <div class="area-card" data-event="crew_fatigue" title="Eventos relacionados con fatiga operacional">
+                        <div class="area-icon">😴</div>
+                        <div class="area-title">Fatiga de Tripulación</div>
+                    </div>
+
+                    <div class="area-card" data-event="technical_failure" title="Fallas técnicas de la aeronave">
+                        <div class="area-icon">🔧</div>
+                        <div class="area-title">Falla Técnica</div>
+                    </div>
+
+                    <div class="area-card" data-event="runway_incursion" title="Incursión en pista/calle de rodaje">
+                        <div class="area-icon">🚨</div>
+                        <div class="area-title">Incursión en Pista</div>
+                    </div>
+
+                    <div class="area-card" data-event="other" title="Otros eventos no especificados">
+                        <div class="area-icon">❓</div>
+                        <div class="area-title">Otro</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de navegación -->
+        <div class="card">
+            <div class="card-body">
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray); color: var(--white);">Regresar</button>
+                    <button type="button" class="btn" id="nextPageBtn" disabled style="display: none;">Continuar al Formulario Específico</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pop-up -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <button class="close-button" id="closeModal">×</button>
+            
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon"></div>
+                <div class="modal-title" id="modalTitle"></div>
+                <div class="modal-subtitle" id="modalSubtitle"></div>
+            </div>
+
+            <div id="modalFormContent">
+                <!-- El contenido del formulario se insertará dinámicamente aquí -->
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="cancelModal">Cancelar</button>
+                <button class="modal-btn modal-btn-primary" id="confirmModal" disabled>Continuar al Formulario Específico</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class FlightEventForm {
+            constructor() {
+                this.selectedEventType = null;
+                this.selectedSubEvent = null;
+                this.currentModalData = null;
+                this.init();
+            }
+
+            init() {
+                const progressFill = document.getElementById('progressFill');
+                if (progressFill) progressFill.style.width = '33.33%';
+
+                this.bindEvents();
+                this.setupPageRoutes();
+            }
+
+            setupPageRoutes() {
+                this.routes = {
+                    'tcas_ta': 'title_desc.html',
+                    'tcas_ra': 'FLT/tcas_ra_form.html',
+                    'gpws': 'FLT/gpws_form.html',
+                    'other_tcas': 'title_desc.html',
+
+                    'unstable_landing': 'FLT/unstable_landing_form.html',
+                    'goaround': 'FLT/goaround_form.html',
+                    'abnormal_contact': 'FLT/abnormal_contact_form.html',
+
+                    'turbulence': 'FLT/turbulence_form.html',
+                    'storm': 'title_desc.html',
+                    'hail': 'title_desc.html',
+                    'windshear': 'FLT/windshear_form.html',
+                    'low_visibility': 'title_desc.html',
+                    'other_weather': 'title_desc.html',
+
+                    'bird_strike': 'FLT/bird_strike_form.html',
+
+                    'scheduled_assignment': 'FLT/scheduled_assignment_form.html',
+                    'executed_assignment': 'FLT/executed_assignment_form.html',
+                    'other_fatigue': 'FLT/scheduled_assignment_form.html',
+
+                    'technical_failure': 'MNT/procedure_form.html',
+                    'other_technical': 'title_desc.html',
+
+                    'runway_incursion': 'FLT/runway_incursion_form.html',
+                    'other_general': 'title_desc.html',
+                };
+
+                // Eventos que no requieren subselección
+                this.directEvents = ['bird_strike', 'technical_failure', 'runway_incursion', 'other'];
+
+                // Configuración de modales por tipo de evento
+                this.modalConfigs = {
+                    'tcas_gpws': {
+                        icon: '⚠️',
+                        title: 'Advertencias TCAS/GPWS',
+                        subtitle: 'Seleccione el tipo específico de advertencia',
+                        options: [
+                            { value: 'tcas_ta', label: 'Alerta de tráfico (TCAS TA)' },
+                            { value: 'tcas_ra', label: 'Alerta de resolución (TCAS RA)' },
+                            { value: 'gpws', label: 'Alerta de proximidad al terreno (GPWS)' },
+                            { value: 'other_tcas', label: 'Otro' }
+                        ]
+                    },
+                    'unstable_approach': {
+                        icon: '🛬',
+                        title: 'Aproximación y Contacto Anormal con la Pista',
+                        subtitle: 'Seleccione el tipo específico de evento',
+                        options: [
+                            { value: 'unstable_landing', label: 'Aproximación inestable con Aterrizaje' },
+                            { value: 'goaround', label: 'Sobrepaso' },
+                            { value: 'abnormal_contact', label: 'Contacto Anormal con la Pista' }
+                        ]
+                    },
+                    'adverse_weather': {
+                        icon: '🌩️',
+                        title: 'Condiciones Meteorológicas',
+                        subtitle: 'Seleccione el tipo de condición meteorológica',
+                        options: [
+                            { value: 'turbulence', label: 'Turbulencia' },
+                            { value: 'storm', label: 'Tormenta (lluvia, truenos o actividad eléctrica)' },
+                            { value: 'hail', label: 'Granizo' },
+                            { value: 'windshear', label: 'Cizalladura de viento - Windshear' },
+                            { value: 'low_visibility', label: 'Reducción de visibilidad (niebla, polvo, etc)' },
+                            { value: 'other_weather', label: 'Otro' }
+                        ]
+                    },
+                    'crew_fatigue': {
+                        icon: '😴',
+                        title: 'Fatiga de Tripulación',
+                        subtitle: 'Seleccione el tipo específico de fatiga',
+                        options: [
+                            { value: 'scheduled_assignment', label: 'Asignación programada' },
+                            { value: 'executed_assignment', label: 'Asignación Ejecutada' },
+                            { value: 'other_fatigue', label: 'Otro' }
+                        ]
+                    }
+                };
+            }
+
+            bindEvents() {
+                // Eventos para las tarjetas de área
+                document.querySelectorAll('.area-card[data-event]').forEach(card => {
+                    card.addEventListener('click', () => this.selectEventType(card));
+                });
+
+                // Eventos del modal
+                document.getElementById('closeModal').addEventListener('click', () => this.closeModal());
+                document.getElementById('cancelModal').addEventListener('click', () => this.closeModal());
+                document.getElementById('confirmModal').addEventListener('click', () => this.confirmSelection());
+                
+                // Cerrar modal al hacer click en el overlay
+                document.getElementById('modalOverlay').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('modalOverlay')) {
+                        this.closeModal();
+                    }
+                });
+
+                // Evento del botón continuar principal
+                const nextBtn = document.getElementById('nextPageBtn');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => this.navigateToSpecificForm());
+                }
+            }
+
+            selectEventType(selectedCard) {
+                const eventType = selectedCard.dataset.event;
+                
+                // Actualizar selección visual
+                document.querySelectorAll('.area-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                selectedCard.classList.add('selected');
+
+                // Especial handling para "other"
+                if (eventType === 'other') {
+                    this.navigateDirectlyToOther();
+                    return;
+                }
+
+                // Si es un evento directo, proceder inmediatamente
+                if (this.directEvents.includes(eventType)) {
+                    this.selectedEventType = eventType;
+                    this.selectedSubEvent = eventType;
+                    this.showContinueButton();
+                    return;
+                }
+
+                // Si requiere subselección, mostrar modal
+                if (this.modalConfigs[eventType]) {
+                    this.showModal(eventType);
+                }
+            }
+
+            showModal(eventType) {
+                const config = this.modalConfigs[eventType];
+                this.currentModalData = { eventType, config };
+                
+                // Configurar contenido del modal
+                document.getElementById('modalIcon').textContent = config.icon;
+                document.getElementById('modalTitle').textContent = config.title;
+                document.getElementById('modalSubtitle').textContent = config.subtitle;
+                
+                // Crear el formulario
+                const formContent = document.getElementById('modalFormContent');
+                formContent.innerHTML = `
+                    <div class="form-group">
+                        <label for="modalSelect">Detalle Específico <span class="required">*</span></label>
+                        <select id="modalSelect">
+                            <option value="">Seleccione...</option>
+                            ${config.options.map(option => 
+                                `<option value="${option.value}">${option.label}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                `;
+
+                // Bind evento del select
+                document.getElementById('modalSelect').addEventListener('change', (e) => {
+                    const confirmBtn = document.getElementById('confirmModal');
+                    confirmBtn.disabled = !e.target.value;
+                });
+
+                // Mostrar modal
+                document.getElementById('modalOverlay').classList.add('show');
+                
+                // Reset del botón confirmar
+                document.getElementById('confirmModal').disabled = true;
+            }
+
+            showContinueButton() {
+                const nextBtn = document.getElementById('nextPageBtn');
+                if (nextBtn) {
+                    nextBtn.style.display = 'inline-block';
+                    nextBtn.disabled = false;
+                }
+                
+                // Ocultar error si existía
+                const eventTypeError = document.getElementById('eventTypeError');
+                if (eventTypeError) eventTypeError.style.display = 'none';
+            }
+
+            hideContinueButton() {
+                const nextBtn = document.getElementById('nextPageBtn');
+                if (nextBtn) {
+                    nextBtn.style.display = 'none';
+                    nextBtn.disabled = true;
+                }
+            }
+
+            closeModal() {
+                document.getElementById('modalOverlay').classList.remove('show');
+                this.currentModalData = null;
+                
+                // Limpiar selección visual si no hay selección confirmada
+                if (!this.selectedEventType) {
+                    document.querySelectorAll('.area-card').forEach(card => {
+                        card.classList.remove('selected');
+                    });
+                    this.hideContinueButton();
+                }
+            }
+
+            confirmSelection() {
+                if (!this.currentModalData) return;
+
+                const selectedValue = document.getElementById('modalSelect').value;
+                if (!selectedValue) return;
+
+                this.selectedEventType = this.currentModalData.eventType;
+                this.selectedSubEvent = selectedValue;
+                
+                // Navegar directamente al formulario específico
+                this.navigateToSpecificForm();
+            }
+
+            navigateDirectlyToOther() {
+                const data = {
+                    flightEventType: 'other',
+                    subEventType: 'other',
+                    timestamp: new Date().toISOString()
+                };
+                sessionStorage.setItem('flightEventData', JSON.stringify(data));
+                window.location.href = 'title_desc.html';
+            }
+
+            validateForm() {
+                const nextBtn = document.getElementById('nextPageBtn');
+                let isValid = false;
+
+                if (!this.selectedEventType) {
+                    isValid = false;
+                } else if (this.directEvents.includes(this.selectedEventType)) {
+                    // Eventos que no requieren subselección - el botón ya está visible
+                    return true;
+                } else {
+                    // Eventos que requieren subselección - no mostrar el botón base
+                    isValid = this.selectedSubEvent && this.selectedSubEvent !== '';
+                    if (nextBtn) {
+                        nextBtn.style.display = 'none';
+                        nextBtn.disabled = true;
+                    }
+                }
+
+                return isValid;
+            }
+
+            navigateToSpecificForm() {
+                if (!this.validateForm()) return;
+
+                const data = {
+                    flightEventType: this.selectedEventType,
+                    subEventType: this.selectedSubEvent || this.selectedEventType,
+                    timestamp: new Date().toISOString()
+                };
+                sessionStorage.setItem('flightEventData', JSON.stringify(data));
+
+                const targetPage = this.routes[this.selectedSubEvent] || this.routes[this.selectedEventType] || 'general_form.html';
+                window.location.href = targetPage;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const formInstance = new FlightEventForm();
+            window.flightEventForm = formInstance;
+        });
+    </script>
+</body>
+</html>

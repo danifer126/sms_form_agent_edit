@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Sobrepaso - Operaciones de Vuelo</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Sobrepaso</h1>
+                <p>Registro detallado de evento de sobrepaso</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Sobrepaso</div>
+        </div>
+
+        <form id="rwyForm">
+            <!-- P_RWY_002 -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del sobrepaso</h2>
+                    <p>Complete los detalles del evento de sobrepaso</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="P_RWY_002">¿Cuál fue la razón principal para realizar el sobrepaso? <span class="required">*</span></label>
+                        <select id="P_RWY_002" name="P_RWY_002" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Parámetros de aproximación inestables">Parámetros de aproximación inestables</option>
+                            <option value="Instrucción del control de tráfico aéreo">Instrucción del control de tráfico aéreo</option>
+                            <option value="Pista ocupada o no disponible">Pista ocupada o no disponible</option>
+                            <option value="Condiciones meteorológicas adversas">Condiciones meteorológicas adversas</option>
+                            <option value="Otra">Otra</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- P_RWY_003 (condicional) -->
+            <div class="card" id="card-rwy-003" style="display:none;">
+                <div class="card-header">
+                    <h2>Criterios de Inestabilidad</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label>¿Qué criterio definió la aproximación como inestable? <span class="required">*</span></label>
+
+                        <div class="form-group">
+                            <label><input type="checkbox" name="P_RWY_003" value="Velocidad (airspeed) fuera de tolerancia"> Velocidad (airspeed) fuera de tolerancia</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" name="P_RWY_003" value="Actitud de la aeronave (pitch/roll) incorrecta"> Actitud de la aeronave (pitch/roll) incorrecta</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" name="P_RWY_003" value="Régimen de descenso excesivo"> Régimen de descenso excesivo</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" name="P_RWY_003" value="Configuración de flaps/tren de aterrizaje inadecuada"> Configuración de flaps/tren de aterrizaje inadecuada</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" name="P_RWY_003" value="Alerta de proximidad al terreno (GPWS) activa"> Alerta de proximidad al terreno (GPWS) activa</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" name="P_RWY_003" value="Desalineación con senda de planeo (GS-Loc—desviación lateral o vertical)"> Desalineación con senda de planeo (GS-Loc—desviación lateral o vertical)</label>
+                        </div>
+                        <small>Puedes marcar varias opciones.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedData = sessionStorage.getItem('flightEventData');
+            const existingData = savedData ? JSON.parse(savedData) : {};
+            const PRWY001 = existingData.P_RWY_001 || null;
+
+            const select002 = document.getElementById('P_RWY_002');
+            const card003 = document.getElementById('card-rwy-003');
+
+            function evalRWY003Visibility() {
+                const reason002 = select002.value;
+                const show = (PRWY001 === 'Aproximación inestable con Aterrizaje') ||
+                             (reason002 === 'Parámetros de aproximación inestables');
+                card003.style.display = show ? 'block' : 'none';
+                if (!show) {
+                    document.querySelectorAll('input[name="P_RWY_003"]').forEach(cb => cb.checked = false);
+                }
+            }
+
+            // Inicial y al cambiar P_RWY_002
+            evalRWY003Visibility();
+            select002.addEventListener('change', evalRWY003Visibility);
+
+            // Submit
+            document.getElementById('rwyForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Si P_RWY_003 está visible, exigir al menos una selección
+                if (card003.style.display !== 'none') {
+                    const anyChecked = Array.from(document.querySelectorAll('input[name="P_RWY_003"]')).some(cb => cb.checked);
+                    if (!anyChecked) {
+                        alert('Selecciona al menos un criterio en P_RWY_003.');
+                        return;
+                    }
+                }
+
+                // Payload
+                const formData = new FormData(e.target);
+                const payload = {};
+
+                for (const [k, v] of formData.entries()) {
+                    if (k === 'P_RWY_003') {
+                        if (!Array.isArray(payload[k])) payload[k] = [];
+                        payload[k].push(v);
+                    } else {
+                        payload[k] = v;
+                    }
+                }
+
+                // Guardar también P_RWY_001 si no existe
+                const merged = { ...existingData, P_RWY_001: existingData.P_RWY_001 || 'Sobrepaso', ...payload };
+                sessionStorage.setItem('flightEventData', JSON.stringify(merged));
+
+                window.location.href = '../title_desc.html';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Manuales - Ingeniería y Mantenimiento</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🔧</div>
+            <div>
+                <h1>Manuales - Documentos</h1>
+                <p>Registro detallado de falla técnica relacionada con manuales o documentos</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 5: Información Específica - Manuales</div>
+        </div>
+
+        <form id="manualsForm">
+            <!-- Información de Manuales y Documentos -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información de Manuales y Documentos</h2>
+                    <p>Complete los detalles específicos del manual o documento asociado</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="manualType">Manual o documento asociado <span class="required">*</span></label>
+                            <select id="manualType" name="manualType" required>
+                                <option value="">Seleccione...</option>
+                                <option value="manual_fabricante">Manual fabricante</option>
+                                <option value="manual_operador">Manual de Operador</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="workOrder">N.º de orden de trabajo (WO) o registro en libro de vuelo (si aplica)</label>
+                            <input type="text" id="workOrder" name="workOrder" placeholder="Ej: WO123456 o Página 15">
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('maintenanceEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Manuales:', data);
+            }
+
+            document.getElementById('manualsForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const manualsData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    manualsData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('maintenanceEventData') || '{}');
+                const combinedData = { ...existingData, manualsDetails: manualsData };
+                
+                sessionStorage.setItem('maintenanceEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc_alternative.html';
+            }
+        });
+    </script>
+</body>
+</html>

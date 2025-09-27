@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Mercancías Peligrosas</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">📋</div>
+            <div>
+                <h1>Mercancías Peligrosas</h1>
+                <p>Registro detallado de eventos con mercancías peligrosas</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 5: Información Específica - Mercancías Peligrosas</div>
+        </div>
+
+        <form id="dangerousGoodsForm">
+            <!-- Información de Mercancías Peligrosas -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información de Mercancías Peligrosas</h2>
+                    <p>Complete los detalles específicos del evento con mercancías peligrosas</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid" style="row-gap:16px;">
+                        <div class="form-group">
+                            <label for="declaredGoods">¿Se trataba de mercancías peligrosas declaradas? <span class="required">*</span></label>
+                            <select id="declaredGoods" name="declaredGoods" required>
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="max-width:420px; justify-self:start; margin-bottom:8px;">
+  <label for="eventType" style="display:block; margin-bottom:6px;">
+    ¿Qué tipo de evento o peligro observó? <span class="required">*</span>
+  </label>
+  <select id="eventType" name="eventType" required style="width:100%; min-width:0;">
+    <option value="">Seleccione...</option>
+    <option value="asegurada_incorrectamente">DGs asegurada incorrectamente - Manipulación incorrecta</option>
+    <option value="error_documentacion">Error en la documentación - Etiquetas o marcas - Discrepancias de la mercancía peligrosa</option>
+    <option value="mercancia_oculta">Mercancía oculta - No declarada</option>
+    <option value="sobrevuelo">Sobrevuelo de mercancías peligrosas</option>
+    <option value="danos_embalaje">Daños en el embalaje de la mercancía peligrosa</option>
+    <option value="segregacion_incorrecta">Segregación incorrecta de la mercancía peligrosa</option>
+    <option value="derrame">Derrame</option>
+    <option value="fuga">Fuga</option>
+    <option value="humo">Humo</option>
+    <option value="explosion">Explosión</option>
+    <option value="sobrecalentamiento">Sobrecalentamiento</option>
+  </select>
+</div>
+                    </div>
+
+                    <div class="form-grid" style="row-gap:16px; margin-top:16px;">
+                        <div class="form-group">
+                            <label for="eventLocation">¿Dónde ocurrió el evento? <span class="required">*</span></label>
+                            <select id="eventLocation" name="eventLocation" required>
+                                <option value="">Seleccione...</option>
+                                <option value="aeronave">Aeronave</option>
+                                <option value="aeropuertos">Aeropuertos</option>
+                                <option value="areas_recreativas">Área recreativas</option>
+                                <option value="bodegas">Bodegas</option>
+                                <option value="hangar">Hangar</option>
+                                <option value="oficinas_administrativas">Oficinas Administrativas</option>
+                                <option value="via_publica">Vía Pública</option>
+                                <option value="talleres_mantenimiento">Talleres de Mantenimiento</option>
+                                <option value="talleres_equipo_terrestre">Talleres Equipo Terrestre</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="involvedElement">¿Qué elemento estuvo involucrado?</label>
+                            <select id="involvedElement" name="involvedElement">
+                                <option value="">Seleccione...</option>
+                                <option value="equipaje_pasajeros">Equipaje de pasajeros</option>
+                                <option value="carga_mercancia">Carga o mercancía</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Campos específicos según ubicación -->
+                    <div class="form-group full-width" id="aircraftLocationGroup" style="display:none; margin-top:16px;">
+                        <label for="aircraftLocation">¿En qué parte de la aeronave?</label>
+                        <select id="aircraftLocation" name="aircraftLocation">
+                            <option value="">Seleccione...</option>
+                            <option value="cabina_mando">Cabina de mando</option>
+                            <option value="cabina_pasajeros">Cabina de pasajeros</option>
+                            <option value="crew_rest">Crew Rest</option>
+                            <option value="galley">Galley</option>
+                            <option value="compartimiento_carga">Compartimiento de carga</option>
+                            <option value="lavatorios">Lavatorios</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width" id="warehouseLocationGroup" style="display:none; margin-top:16px;">
+                        <label for="warehouseLocation">¿En qué parte de la bodega?</label>
+                        <select id="warehouseLocation" name="warehouseLocation">
+                            <option value="">Seleccione...</option>
+                            <option value="cuartos_frios">Cuartos fríos</option>
+                            <option value="almacenes">Almacenes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-grid" style="row-gap:16px; margin-top:16px;">
+                        <div class="form-group">
+                            <label for="bagTagOrGuide">Si lo conoce ingrese el Bag tag o guía aérea del elemento involucrado</label>
+                            <input type="text" id="bagTagOrGuide" name="bagTagOrGuide" placeholder="Ej: 12345678 o 123-45678901">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="approximateWeight">Peso aproximado del elemento (kilogramos)</label>
+                            <input type="number" id="approximateWeight" name="approximateWeight" placeholder="Ej: 25" step="0.1" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top:16px;">
+                        <label for="injuredPersons">¿Hubo personas lesionadas? <span class="required">*</span></label>
+                        <select id="injuredPersons" name="injuredPersons" required>
+                            <option value="">Seleccione...</option>
+                            <option value="si">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Información de Vuelo</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('dispatchEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Mercancías Peligrosas:', data);
+            }
+
+            // Mostrar/ocultar campos según la ubicación del evento
+            document.getElementById('eventLocation').addEventListener('change', function() {
+                const aircraftGroup = document.getElementById('aircraftLocationGroup');
+                const warehouseGroup = document.getElementById('warehouseLocationGroup');
+                
+                // Ocultar todos los grupos específicos
+                aircraftGroup.style.display = 'none';
+                warehouseGroup.style.display = 'none';
+                
+                // Mostrar grupo específico según selección
+                if (this.value === 'aeronave') {
+                    aircraftGroup.style.display = 'block';
+                } else if (this.value === 'bodegas') {
+                    warehouseGroup.style.display = 'block';
+                }
+            });
+
+            document.getElementById('dangerousGoodsForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const dangerousGoodsData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    dangerousGoodsData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('dispatchEventData') || '{}');
+                const combinedData = { ...existingData, dangerousGoodsDetails: dangerousGoodsData };
+                
+                sessionStorage.setItem('dispatchEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

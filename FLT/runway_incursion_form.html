@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Incursión en Pista - Operaciones de Vuelo</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Incursión en Pista</h1>
+                <p>Registro detallado de evento de incursión en pista</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Incursión en Pista</div>
+        </div>
+
+        <form id="runwayIncursionForm">
+            <!-- Información del Objeto/Vehículo Involucrado -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Objeto o Vehículo Involucrado</h2>
+                    <p>Identifique qué estuvo involucrado en la incursión</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="objetoInvolucrado">¿Qué objeto o vehículo estuvo involucrado en el evento? <span class="required">*</span></label>
+                        <select id="objetoInvolucrado" name="objetoInvolucrado" required>
+                            <option value="">Seleccione...</option>
+                            <option value="aeronave">Aeronave</option>
+                            <option value="animal">Animal</option>
+                            <option value="persona">Persona</option>
+                            <option value="vehiculo_terrestre">Vehículo terrestre (remolque, tractor, carro de combustible)</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maniobras Ejecutadas -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Maniobras Ejecutadas</h2>
+                    <p>Acciones tomadas por la tripulación y el objeto/vehículo</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="maniobraTripulacion">¿Qué maniobra ejecutó la tripulación? <span class="required">*</span></label>
+                        <select id="maniobraTripulacion" name="maniobraTripulacion" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Continuo_rodaje">Continuo rodaje</option>
+                            <option value="parada_emergencia">Parada inmediata</option>
+                            <option value="despegue">Despegue</option>
+                            <option value="cancelacion_despegue">Cancelación de despegue (RTO)</option>
+                            <option value="aterrizaje">Aterrizaje</option>
+                            <option value="sobrepaso">Sobrepaso</option>
+                            <option value="viraje_evasivo">Viraje evasivo</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="autorizacionATC">¿La maniobra fue solicitada o autorizada por control de tráfico aéreo? <span class="required">*</span></label>
+                        <select id="autorizacionATC" name="autorizacionATC" required>
+                            <option value="">Seleccione...</option>
+                            <option value="solicitada_atc">Solicitada por ATC</option>
+                            <option value="iniciada_tripulacion">Iniciada por la tripulación (sin instrucción ATC)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width" id="maniobraObjetoGroup">
+                        <label for="maniobraObjeto">¿Qué maniobra ejecutó el objeto o vehículo involucrado?</label>
+                        <select id="maniobraObjeto" name="maniobraObjeto">
+                            <option value="">Seleccione...</option>
+                             <option value="Continuo_rodaje">Continuo rodaje</option>
+                            <option value="parada_emergencia">Parada inmediata</option>
+                            <option value="despegue">Despegue</option>
+                            <option value="cancelacion_despegue">Cancelación de despegue (RTO)</option>
+                            <option value="aterrizaje">Aterrizaje</option>
+                            <option value="sobrepaso">Sobrepaso</option>
+                            <option value="viraje_evasivo">Viraje evasivo</option>
+                            <option value="otro">Otro</option>
+                            <option value="no_aplica">No aplica</option>
+                        </select>
+                        <small class="help-text">Seleccione "No aplica" si el objeto no ejecutó ninguna maniobra específica</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Runway Incursion:', data);
+            }
+
+            document.getElementById('runwayIncursionForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                // Validar campos requeridos (solo los que existen)
+                const requiredFields = ['objetoInvolucrado', 'maniobraTripulacion', 'autorizacionATC'];
+                let isValid = true;
+
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (!field.value.trim()) {
+                        field.style.borderColor = '#dc3545';
+                        isValid = false;
+                    } else {
+                        field.style.borderColor = '';
+                    }
+                });
+
+                if (!isValid) {
+                    alert('Por favor complete todos los campos obligatorios marcados con *');
+                    return;
+                }
+
+                const formData = new FormData(e.target);
+                const runwayIncursionData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    runwayIncursionData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, runwayIncursionDetails: runwayIncursionData };
+                
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                
+                console.log('Datos de Runway Incursion guardados:', runwayIncursionData);
+                window.location.href = '../title_desc.html';
+            }
+
+            // Mostrar/ocultar campo de maniobra del objeto
+            document.getElementById('objetoInvolucrado').addEventListener('change', function() {
+                const maniobraObjetoGroup = document.getElementById('maniobraObjetoGroup');
+                const maniobraObjetoField = document.getElementById('maniobraObjeto');
+
+                if (this.value === 'animal' || this.value === 'persona') {
+                    maniobraObjetoField.value = 'no_aplica';
+                    maniobraObjetoGroup.style.display = 'none';
+                } else {
+                    maniobraObjetoGroup.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

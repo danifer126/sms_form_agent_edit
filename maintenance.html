@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulario Específico - Ingeniería y Mantenimiento</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Estilos alineados con el formato usado en flight.html */
+    .area-selection { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:1rem; }
+    .area-card { background:#f8fafc; border:2px solid #e2e8f0; border-radius:8px; padding:1.5rem; text-align:center; cursor:pointer; transition:all .3s ease; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .area-card:hover { border-color:#3b82f6; box-shadow:0 4px 15px rgba(59,130,246,.2); transform:translateY(-2px); }
+    .area-card.selected { border-color:#3b82f6; background:#dbeafe; }
+    .area-icon { font-size:2.5rem; margin-bottom:1rem; }
+    .area-title { font-weight:600; font-size:1.1rem; margin-bottom:1rem; }
+
+    /* Modal / Pop-up (mismo patrón de flight.html) */
+    .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; z-index:1000; }
+    .modal-overlay.show { display:flex; }
+    .modal-content { background:#fff; border-radius:12px; padding:2rem; max-width:500px; width:90%; max-height:80vh; overflow-y:auto; position:relative; box-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 10px 10px -5px rgba(0,0,0,.04); animation:modalFadeIn .3s ease-out; }
+    .modal-header { text-align:center; margin-bottom:2rem; }
+    .modal-icon { font-size:3rem; margin-bottom:1rem; }
+    .modal-title { font-size:1.5rem; font-weight:600; color:#1f2937; margin-bottom:.5rem; }
+    .modal-subtitle { color:#6b7280; font-size:.95rem; }
+    .close-button { position:absolute; top:1rem; right:1rem; background:#f3f4f6; border:1px solid #d1d5db; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#6b7280; font-size:1.2rem; transition:all .2s ease; }
+    .close-button:hover { background:#e5e7eb; color:#374151; }
+
+    .form-group { margin-bottom:2rem; }
+    .form-group label { display:block; margin-bottom:.75rem; font-weight:600; color:#374151; font-size:1rem; }
+    .form-group select { width:100%; padding:.875rem; border:2px solid #d1d5db; border-radius:8px; background:#fff; color:#374151; font-size:1rem; transition:border-color .2s ease; }
+    .form-group select:focus { outline:none; border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.1); }
+    .required { color:#ef4444; }
+
+    .modal-actions { display:flex; gap:1rem; justify-content:flex-end; margin-top:2rem; padding-top:1.5rem; border-top:1px solid #e5e7eb; }
+    .modal-btn { padding:.75rem 1.5rem; border-radius:8px; font-weight:500; cursor:pointer; transition:all .2s ease; border:none; font-size:.95rem; }
+    .modal-btn-cancel { background:var(--text-gray); color:var(--white); }
+    .modal-btn-cancel:hover { opacity:.9; }
+    .modal-btn-primary { background:var(--primary-blue); color:var(--white); }
+    .modal-btn-primary:hover:not(:disabled) { background:var(--primary-blue-hover); }
+    .modal-btn-primary:disabled { background:#9ca3af; cursor:not-allowed; }
+
+    @keyframes modalFadeIn { from{opacity:0; transform:scale(.9) translateY(-10px);} to{opacity:1; transform:scale(1) translateY(0);} }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">🔧</div>
+      <div>
+        <h1>Operaciones de Ingeniería y Mantenimiento</h1>
+        <p>Registro de eventos y peligros relacionados con las operaciones de mantenimiento</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Barra de progreso -->
+    <div class="progress-indicator">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="step-text">Paso 2 de 6: Detalle del Evento</div>
+    </div>
+
+    <!-- Selección principal -->
+    <div class="card">
+      <div class="card-header">
+        <h2>¿Qué tipo de evento ocurrió en Ingeniería y Mantenimiento?</h2>
+        <p>Seleccione la opción que mejor describe lo que desea reportar</p>
+      </div>
+      <div class="card-body">
+        <div id="eventTypeError" class="alert alert-error" style="display:none;"><strong>Error:</strong> Debe seleccionar un tipo de evento antes de continuar.</div>
+        <div class="area-selection" id="areaSelection">
+          <div class="area-card" data-event="technical_failure" title="Fallas técnicas en equipos o sistemas"><div class="area-icon">⚠️</div><div class="area-title">Falla Técnica</div></div>
+          <div class="area-card" data-event="documentation" title="Documentación y Manuales"><div class="area-icon">📚</div><div class="area-title">Documentación y Manuales</div></div>
+          <div class="area-card" data-event="tools" title="Eventos relacionados con herramientas de trabajo"><div class="area-icon">🛠️</div><div class="area-title">Herramientas</div></div>
+          <div class="area-card" data-event="other" title="Otros eventos no especificados"><div class="area-icon">❓</div><div class="area-title">Otro</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones navegación -->
+    <div class="card">
+      <div class="card-body">
+        <div class="form-actions">
+          <button type="button" class="btn" onclick="history.back()" style="background:var(--text-gray); color:var(--white);">Regresar</button>
+          <button type="button" class="btn" id="nextPageBtn" disabled style="display:none;">Continuar al Formulario Específico</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Pop-up -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <button class="close-button" id="closeModal">×</button>
+      <div class="modal-header">
+        <div class="modal-icon" id="modalIcon"></div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-subtitle" id="modalSubtitle"></div>
+      </div>
+      <div id="modalFormContent"></div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-cancel" id="cancelModal">Cancelar</button>
+        <button class="modal-btn modal-btn-primary" id="confirmModal" disabled>Continuar al Formulario Específico</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class MaintenanceEventForm {
+      constructor(){ this.selectedEventType=null; this.selectedSubEvent=null; this.currentModalData=null; this.init(); }
+      init(){ const pf=document.getElementById('progressFill'); if(pf) pf.style.width='33.33%'; this.bindEvents(); this.setupPageRoutes(); }
+
+      setupPageRoutes(){
+        // Mantener rutas originales de maintenance.html
+        this.routes={
+          'technical_failure':'MNT/procedure_form.html',
+          'documentation':'MNT/manuals_form.html',
+          // Subtipos de herramientas
+          'lost_tools':'MNT/tools_form.html',
+          'damage_tools':'MNT/tools_form.html',
+          'no_uselful_tools':'MNT/tools_form.html',
+          'lack_tools':'MNT/tools_form.html',
+          'descalibrada_tools':'MNT/tools_form.html',
+          'other_tools':'MNT/tools_form.html',
+          // Fallbacks
+          'tools':'MNT/tools_form.html',
+          'other':'title_desc.html'
+        };
+
+        // Eventos directos (sin subselección/modal)
+        this.directEvents=['technical_failure','documentation','other'];
+
+        // Configuración de modales para eventos con subselección
+        this.modalConfigs={
+          'tools':{
+            icon:'🛠️',
+            title:'Herramientas',
+            subtitle:'Seleccione el detalle específico',
+            options:[
+              { value:'lost_tools', label:'Pérdida de herramientas' },
+              { value:'damage_tools', label:'Daño de herramientas' },
+              { value:'no_uselful_tools', label:'Herramienta no adecuada' },
+              { value:'lack_tools', label:'Herramienta incompleta / faltante' },
+              { value:'descalibrada_tools', label:'Herramienta vencida / descalibrada' },
+              { value:'other_tools', label:'Otro' }
+            ]
+          }
+        };
+      }
+
+      bindEvents(){
+        document.querySelectorAll('.area-card[data-event]').forEach(card=>{ card.addEventListener('click',()=>this.selectEventType(card)); });
+        document.getElementById('closeModal').addEventListener('click',()=>this.closeModal());
+        document.getElementById('cancelModal').addEventListener('click',()=>this.closeModal());
+        document.getElementById('confirmModal').addEventListener('click',()=>this.confirmSelection());
+        document.getElementById('modalOverlay').addEventListener('click',(e)=>{ if(e.target===document.getElementById('modalOverlay')) this.closeModal(); });
+        const nextBtn=document.getElementById('nextPageBtn'); if(nextBtn) nextBtn.addEventListener('click',()=>this.navigateToSpecificForm());
+      }
+
+      selectEventType(selectedCard){
+        const eventType=selectedCard.dataset.event;
+        document.querySelectorAll('.area-card').forEach(card=>card.classList.remove('selected'));
+        selectedCard.classList.add('selected');
+
+        if(eventType==='other'){ this.navigateDirectlyToOther(); return; }
+
+        if(this.directEvents.includes(eventType)){
+          this.selectedEventType=eventType; this.selectedSubEvent=eventType; this.showContinueButton(); return;
+        }
+
+        if(this.modalConfigs[eventType]){ this.showModal(eventType); }
+      }
+
+      showModal(eventType){
+        const config=this.modalConfigs[eventType]; this.currentModalData={eventType,config};
+        document.getElementById('modalIcon').textContent=config.icon;
+        document.getElementById('modalTitle').textContent=config.title;
+        document.getElementById('modalSubtitle').textContent=config.subtitle;
+        const formContent=document.getElementById('modalFormContent');
+        formContent.innerHTML=`<div class="form-group"><label for="modalSelect">Detalle Específico <span class="required">*</span></label><select id="modalSelect"><option value="">Seleccione...</option>${config.options.map(o=>`<option value="${o.value}">${o.label}</option>`).join('')}</select></div>`;
+        document.getElementById('modalSelect').addEventListener('change',(e)=>{ document.getElementById('confirmModal').disabled=!e.target.value; });
+        document.getElementById('modalOverlay').classList.add('show');
+        document.getElementById('confirmModal').disabled=true; this.hideContinueButton();
+      }
+
+      closeModal(){ document.getElementById('modalOverlay').classList.remove('show'); this.currentModalData=null; if(!this.selectedEventType){ document.querySelectorAll('.area-card').forEach(card=>card.classList.remove('selected')); this.hideContinueButton(); } }
+      confirmSelection(){ if(!this.currentModalData) return; const v=document.getElementById('modalSelect').value; if(!v) return; this.selectedEventType=this.currentModalData.eventType; this.selectedSubEvent=v; this.navigateToSpecificForm(); }
+
+      showContinueButton(){ const nextBtn=document.getElementById('nextPageBtn'); if(nextBtn){ nextBtn.style.display='inline-block'; nextBtn.disabled=false; } const err=document.getElementById('eventTypeError'); if(err) err.style.display='none'; }
+      hideContinueButton(){ const nextBtn=document.getElementById('nextPageBtn'); if(nextBtn){ nextBtn.style.display='none'; nextBtn.disabled=true; } }
+
+      navigateDirectlyToOther(){ const data={ maintenanceEventType:'other', subEventType:'other', timestamp:new Date().toISOString() }; sessionStorage.setItem('maintenanceEventData', JSON.stringify(data)); window.location.href='title_desc.html'; }
+
+      validateForm(){ if(!this.selectedEventType) return false; if(this.directEvents.includes(this.selectedEventType)) return true; return !!this.selectedSubEvent; }
+
+      navigateToSpecificForm(){
+        if(!this.validateForm()) return;
+        const data={ maintenanceEventType:this.selectedEventType, subEventType:this.selectedSubEvent||this.selectedEventType, timestamp:new Date().toISOString() };
+        sessionStorage.setItem('maintenanceEventData', JSON.stringify(data));
+        const targetPage=this.routes[this.selectedSubEvent]||this.routes[this.selectedEventType]||'title_desc.html';
+        window.location.href=targetPage;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>{ const formInstance=new MaintenanceEventForm(); window.maintenanceEventForm=formInstance; });
+  </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Turbulencia Cabina - Operaciones de Vuelo</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Turbulencia - Cabina de pasajeros</h1>
+                <p>Registro detallado de evento de turbulencia en cabina</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Turbulencia Cabina</div>
+        </div>
+
+        <form id="turbulenciaCabinaForm">
+            <!-- Información del Evento de Turbulencia -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Evento de Turbulencia</h2>
+                    <p>Complete los detalles específicos del evento de turbulencia</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="turbulenceAwareness">¿Piloto informo sobre la posibilidad de turbulencia? <span class="required">*</span></label>
+                            <select id="turbulenceAwareness" name="turbulenceAwareness" required>
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="seatbeltSign">¿Estaba la señal de cinturones encendida? <span class="required">*</span></label>
+                            <select id="seatbeltSign" name="seatbeltSign" required>
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="serviceStop">¿Si estaba prestando servicio abordo este se detuvo?</label>
+                            <select id="serviceStop" name="serviceStop">
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                                <option value="no_aplica">No aplica</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="injuredPersons">¿Hubo personas lesionadas? <span class="required">*</span></label>
+                            <select id="injuredPersons" name="injuredPersons" required>
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Turbulencia Cabina:', data);
+            }
+
+            document.getElementById('turbulenciaCabinaForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const turbulenciaCabinaData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    turbulenciaCabinaData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, turbulenciaCabinaDetails: turbulenciaCabinaData };
+                
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

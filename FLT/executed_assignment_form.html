@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fatiga Tripulación - Asignación Ejecutada</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    /* Ajuste del layout con 3 columnas (mismo patrón de bird_strike_form) */
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 60px 1fr 60px;
+      gap: 1rem;
+      align-items: stretch;
+      margin-top: 1rem;
+    }
+
+    /* Botones de navegación laterales */
+    .nav-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border: 2px solid #d8d7d7;
+      border-radius: 12px;
+      padding: 1rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      height: 100%;
+      font-weight: 600;
+      color: var(--text-gray, #f0f0f0);
+    }
+
+    .nav-button:hover:not(:disabled) {
+      border-color: var(--primary-blue);
+      color: var(--primary-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .nav-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+      background: rgba(75, 75, 75, 0.05);
+    }
+
+    .nav-button .icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-button .text {
+      font-weight: 600;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg, #fff);
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      width: 100%;
+      position: relative;
+    }
+
+    .tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .tab-content.active {
+      display: flex;
+    }
+
+    .tab-indicator {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      background: var(--primary-blue);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .card-header p {
+      margin: 0.25rem 0 1rem;
+      font-size: 0.95rem;
+      color: var(--text-gray, #666);
+    }
+
+
+    /* Ajuste para checkboxes dentro de .checkbox-group */
+.checkbox-group .checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* espacio pequeño entre el cuadro y el texto */
+  font-size: 0.95rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: auto;
+  height: auto;
+  margin: 0;  /* elimina márgenes extra */
+  accent-color: var(--primary-blue); /* opcional, color del check */
+}
+
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(30,64,175,0.1);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-top: 2rem;
+      gap: 1rem;
+    }
+
+    /* Utilidades */
+    .full-width { grid-column: 1 / -1; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    @media (max-width:768px) {
+      .form-wrapper { grid-template-columns: 1fr; gap: 1rem; }
+      .nav-button { flex-direction: row; justify-content: center; padding: 0.8rem 1rem; min-width: auto; }
+      .card-body { padding: 1.5rem; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">✈</div>
+      <div>
+        <h1>Fatiga de la Tripulación - Asignación Ejecutada</h1>
+        <p>Registro detallado de fatiga durante asignación ejecutada</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="progress-indicator">
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill" style="width: 20%;"></div>
+      </div>
+      <div class="step-text" id="progressText">
+        Paso 3 de 6: Información Específica - Fatiga de la Tripulación
+      </div>
+    </div>
+
+    <form id="executedAssignmentForm" novalidate>
+      <div class="form-wrapper">
+        <!-- Botón anterior -->
+        <button type="button" id="prevBtn" class="nav-button" disabled>
+          <div class="icon">←</div>
+          <div class="text">Anterior</div>
+        </button>
+
+        <!-- Card con tabs -->
+        <div class="card">
+          <div class="tab-indicator" id="tabIndicator">1 / 5</div>
+
+          <!-- TAB 1: Detalles de la Asignación -->
+          <div class="tab-content active" id="tab1">
+            <div class="card-header">
+              <h2>Detalles de la Asignación</h2>
+              <p>Por favor, ingrese los detalles de la asignación que realizó.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group full-width">
+                <label for="startTime">¿A qué hora local inició la asignación que está reportando? <span class="required">*</span></label>
+                <input type="time" id="startTime" name="startTime" required>
+              </div>
+              <div class="form-group full-width">
+                <label for="alertLevel">¿Qué nivel de alerta percibió durante la asignación? <span class="required">*</span></label>
+                <select id="alertLevel" name="alertLevel" required>
+                  <option value="">Seleccione...</option>
+                  <option value="1">1 - Extremadamente alerta</option>
+                  <option value="2">2 - Muy alerta</option>
+                  <option value="3">3 - Alerta</option>
+                  <option value="4">4 - Moderadamente alerta</option>
+                  <option value="5">5 - Ni alerta ni somnoliento</option>
+                  <option value="6">6 - Algunos signos de somnolencia</option>
+                  <option value="7">7 - Somnoliento, pero sin esfuerzo para mantenerse alerta</option>
+                  <option value="8">8 - Somnoliento, con esfuerzo para mantenerse alerta</option>
+                  <option value="9">9 - Muy somnoliento, gran esfuerzo para mantenerse alerta, luchando contra el sueño</option>
+                </select>
+              </div>
+
+
+               <div class="form-group full-width">
+                <label for="EventRelated">¿El reporte que está presentando se relaciona con un evento operacional?</label>
+                <select id="EventRelated" name="EventRelated">
+                  <option value="">Seleccione...</option>
+                  <option value="yes_safety_event">Sí</option>
+                  <option value="no_safety_event">No</option>
+                </select>
+              </div>
+
+
+            </div>
+          </div>
+
+          <!-- TAB 2: Descansos durante/asociados a la asignación -->
+          <div class="tab-content" id="tab2">
+            <div class="card-header">
+              <h2>Descansos Asociados</h2>
+              <p>Información sobre siestas y descanso controlado</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group full-width">
+                <label for="napDuration">Si antes de iniciar la asignación tomó una siesta ¿Cuánto tiempo duró esta siesta?</label>
+                <select id="napDuration" name="napDuration">
+                  <option value="">Seleccione...</option>
+                  <option value="sin_siesta">No tomó siesta</option>
+                  <option value="15_20_min">15 a 20 min</option>
+                  <option value="30_40_min">30 a 40 min</option>
+                  <option value="1_hora">1 hora</option>
+                  <option value="2_horas">2 horas</option>
+                  <option value="mas_2_horas">Más de 2 horas</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="FlightnapDuration">¿Hizo uso del flight deck napping o descanso controlado durante el vuelo? ¿cuánto tiempo?</label>
+                <select id="FlightnapDuration" name="FlightnapDuration">
+                  <option value="">Seleccione...</option>
+                  <option value="without_nap">No hizo uso</option>
+                  <option value="20_40_min_nap">De 20 a 40 minutos</option>
+                  <option value="40_2_hours_nap">De 40 min a 2 horas</option>
+                  <option value="2_3_hours_nap">De 2 a 3 horas</option>
+                </select>
+              </div>
+
+             
+            </div>
+          </div>
+
+          <!-- TAB 3: Factores causales -->
+          <div class="tab-content" id="tab3">
+            <div class="card-header">
+              <h2>Factores que contribuyeron a la fatiga</h2>
+              <p>Seleccione las que apliquen</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group full-width" style="margin-top: 0.5rem;">
+                <label><span class="required">*</span></label>
+                <div class="checkbox-group" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+                  <label class="checkbox-item"><input type="checkbox" name="personalFactors[]" value="hotel_inadecuado"> Descanso en el hotel fue inadecuado</label>
+                  <label class="checkbox-item"><input type="checkbox" name="personalFactors[]" value="casa_inadecuada"> Descanso en casa fue inadecuado</label>
+                  <label class="checkbox-item"><input type="checkbox" name="personalFactors[]" value="inicio_asignacion"> Iniciar la asignación con cansancio</label>
+                  <label class="checkbox-item"><input type="checkbox" name="personalFactors[]" value="descanso_asignacion_inadecuada"> Descanso durante la asignación fue insuficiente o interrumpido</label>
+                  <label class="checkbox-item"><input type="checkbox" name="personalFactors[]" value="programacion"> Horario de la programación afectó el descanso</label>
+                  <label class="checkbox-item"><input type="checkbox" name="personalFactors[]" value="desplazamientos_largos"> Desplazamientos largos (commuting)</label>
+                  <label class="checkbox-item"><input type="checkbox" name="personalFactors[]" value="jet_lag"> Jet lag / cambio de huso horario</label>
+                  <label class="checkbox-item"><input type="checkbox" name="personalFactors[]" value="ninguno"> Ninguno de los anteriores</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: Horarios de Sueño previos -->
+          <div class="tab-content" id="tab4">
+            <div class="card-header">
+              <h2>Horarios de Sueño</h2>
+              <p>Información sobre los horarios de sueño previos a la asignación</p>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="bedTime">El día anterior a la asignación ¿A qué hora se durmió aproximadamente? <span class="required">*</span></label>
+                  <input type="time" id="bedTime" name="bedTime" required>
+                </div>
+                <div class="form-group">
+                  <label for="wakeTime">El día de la asignación ¿A qué hora se despertó aproximadamente? <span class="required">*</span></label>
+                  <input type="time" id="wakeTime" name="wakeTime" required>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="sleepTwoDaysAgo">¿Cuántas horas durmió aproximadamente dos días antes de la asignación (hace dos días)? <span class="required">*</span></label>
+                  <select id="sleepTwoDaysAgo" name="sleepTwoDaysAgo" required>
+                    <option value="">Seleccione...</option>
+                    <option value="menos_3_hrs">Menos de 3 hrs</option>
+                    <option value="3_hrs">3 hrs</option>
+                    <option value="4_hrs">4 hrs</option>
+                    <option value="5_hrs">5 hrs</option>
+                    <option value="6_hrs">6 hrs</option>
+                    <option value="7_hrs">7 hrs</option>
+                    <option value="8_hrs">8 hrs</option>
+                    <option value="9_hrs">9 hrs</option>
+                    <option value="10_hrs">10 hrs</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="sleepThreeDaysAgo">¿Cuántas horas durmió aproximadamente tres días antes de la asignación (hace tres días)? <span class="required">*</span></label>
+                  <select id="sleepThreeDaysAgo" name="sleepThreeDaysAgo" required>
+                    <option value="">Seleccione...</option>
+                    <option value="menos_3_hrs">Menos de 3 hrs</option>
+                    <option value="3_hrs">3 hrs</option>
+                    <option value="4_hrs">4 hrs</option>
+                    <option value="5_hrs">5 hrs</option>
+                    <option value="6_hrs">6 hrs</option>
+                    <option value="7_hrs">7 hrs</option>
+                    <option value="8_hrs">8 hrs</option>
+                    <option value="9_hrs">9 hrs</option>
+                    <option value="10_hrs">10 hrs</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 5: Información adicional -->
+          <div class="tab-content" id="tab5">
+            <div class="card-header">
+              <h2>Información Adicional</h2>
+              <p>Situaciones personales o de salud que puedan afectar el desempeño</p>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="healthSituation">¿Actualmente tiene alguna situación personal o de salud que pueda afectar su desempeño o sus horas de sueño? <span class="required">*</span></label>
+                  <select id="healthSituation" name="healthSituation" required>
+                    <option value="">Seleccione...</option>
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="wantsContact">¿Desea ser contactado por el equipo de salud? <span class="required">*</span></label>
+                  <select id="wantsContact" name="wantsContact" required>
+                    <option value="">Seleccione...</option>
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón siguiente -->
+        <button type="button" id="nextBtn" class="nav-button">
+          <div class="icon">→</div>
+          <div class="text">Siguiente</div>
+        </button>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+        <button type="submit" id="submitBtn" class="btn" disabled>Continuar a Descripción del Evento</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    let currentTab = 1;
+    const totalTabs = 5;
+
+    // Campos requeridos por validación global
+    const allRequired = [
+      'startTime', 'alertLevel',
+      'bedTime', 'wakeTime',
+      'sleepTwoDaysAgo', 'sleepThreeDaysAgo',
+      'healthSituation', 'wantsContact',
+      // checkbox group se valida aparte
+    ];
+
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function anyPersonalFactorChecked() {
+      const boxes = document.querySelectorAll('input[name="personalFactors[]"]');
+      for (const b of boxes) { if (b.checked) return true; }
+      return false;
+    }
+
+    function validateCurrentTab() {
+      switch (currentTab) {
+        case 1:
+          return ['startTime','alertLevel'].every(id => !!document.getElementById(id)?.value);
+        case 2:
+          // Todos opcionales en este tab
+          return true;
+        case 3:
+          // Requiere al menos un checkbox (según asterisco en la UI)
+          return anyPersonalFactorChecked();
+        case 4:
+          return ['bedTime','wakeTime','sleepTwoDaysAgo','sleepThreeDaysAgo'].every(id => !!document.getElementById(id)?.value);
+        case 5:
+          return ['healthSituation','wantsContact'].every(id => !!document.getElementById(id)?.value);
+        default:
+          return true;
+      }
+    }
+
+    function validateAllRequired() {
+      const basicOk = allRequired.every(id => {
+        const el = document.getElementById(id);
+        return el && el.value.trim() !== '';
+      });
+      // Incluir validación de factores personales
+      return basicOk && anyPersonalFactorChecked();
+    }
+
+    function updateTabDisplay() {
+      for (let i = 1; i <= totalTabs; i++) {
+        const tab = document.getElementById('tab' + i);
+        tab.classList.toggle('active', i === currentTab);
+      }
+      document.getElementById('tabIndicator').textContent = `${currentTab} / ${totalTabs}`;
+      prevBtn.disabled = currentTab === 1;
+      nextBtn.disabled = currentTab === totalTabs || !validateCurrentTab();
+      submitBtn.disabled = !validateAllRequired();
+      document.getElementById('progressFill').style.width = `50%`;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentTab > 1) { currentTab--; updateTabDisplay(); }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (!validateCurrentTab()) {
+        alert('Por favor complete los campos obligatorios de esta sección antes de continuar.');
+        return;
+      }
+      if (currentTab < totalTabs) { currentTab++; updateTabDisplay(); }
+    });
+
+    document.getElementById('executedAssignmentForm').addEventListener('input', updateTabDisplay);
+
+    document.getElementById('executedAssignmentForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateAllRequired()) {
+        alert('Por favor complete todos los campos obligatorios marcados con * en todas las secciones');
+        return;
+      }
+      const formData = new FormData(e.target);
+      const executedAssignmentData = {};
+      for (let [key, value] of formData.entries()) {
+        if (key.endsWith('[]')) {
+          const base = key.slice(0, -2);
+          executedAssignmentData[base] = executedAssignmentData[base] || [];
+          executedAssignmentData[base].push(value);
+        } else {
+          executedAssignmentData[key] = value;
+        }
+      }
+      const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+      const combinedData = { ...existingData, executedAssignmentDetails: executedAssignmentData };
+      sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+      console.log('Datos guardados - Asignación Ejecutada:', executedAssignmentData);
+      window.location.href = '../title_desc.html';
+    });
+
+    // Inicialización
+    (function initFromSession(){
+      const saved = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+      if (saved.executedAssignmentDetails) {
+        const data = saved.executedAssignmentDetails;
+        for (const key in data) {
+          const val = data[key];
+          const el = document.getElementById(key) || document.querySelector(`[name="${key}"]`);
+          if (!el) continue;
+          if (Array.isArray(val)) {
+            // checkbox group (personalFactors)
+            val.forEach(v => {
+              const box = document.querySelector(`input[name="personalFactors[]"][value="${v}"]`);
+              if (box) box.checked = true;
+            });
+          } else {
+            el.value = val;
+          }
+        }
+      }
+    })();
+
+    updateTabDisplay();
+  </script>
+</body>
+</html>

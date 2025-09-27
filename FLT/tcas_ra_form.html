@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TCAS RA (Resolution Advisory)</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    /* Ajuste del layout con 3 columnas (patrón de bird_strike_form) */
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 60px 1fr 60px;
+      gap: 1rem;
+      align-items: stretch;
+      margin-top: 1rem;
+    }
+
+    .nav-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border: 2px solid #d8d7d7;
+      border-radius: 12px;
+      padding: 1rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      height: 100%;
+      font-weight: 600;
+      color: var(--text-gray, #f0f0f0);
+    }
+
+    .nav-button:hover:not(:disabled) {
+      border-color: var(--primary-blue);
+      color: var(--primary-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .nav-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+      background: rgba(75, 75, 75, 0.05);
+    }
+
+    .nav-button .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .nav-button .text { font-weight: 600; }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg, #fff);
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      width: 100%;
+      position: relative;
+    }
+
+    .tab-content { display: none; flex-direction: column; gap: 1.25rem; }
+    .tab-content.active { display: flex; }
+
+    .tab-indicator {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      background: var(--primary-blue);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .card-header h2 { margin: 0; font-size: 1.4rem; }
+    .card-header p { margin: 0.25rem 0 1rem; font-size: 0.95rem; color: var(--text-gray, #666); }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      background: white;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(30,64,175,0.1);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-top: 2rem;
+      gap: 1rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .full-width { grid-column: 1 / -1; }
+
+    @media (max-width:768px) {
+      .form-wrapper { grid-template-columns: 1fr; gap: 1rem; }
+      .nav-button { flex-direction: row; justify-content: center; padding: 0.8rem 1rem; min-width: auto; }
+      .card-body { padding: 1.5rem; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">✈</div>
+      <div>
+        <h1>TCAS RA (Resolution Advisory)</h1>
+        <p>Registro detallado de evento TCAS RA</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="progress-indicator">
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill" style="width: 25%;"></div>
+      </div>
+      <div class="step-text" id="progressText">
+        Paso 3 de 6: Información Específica - TCAS RA
+      </div>
+    </div>
+
+    <form id="tcasRaForm" novalidate>
+      <div class="form-wrapper">
+        <!-- Botón anterior -->
+        <button type="button" id="prevBtn" class="nav-button" disabled>
+          <div class="icon">←</div>
+          <div class="text">Anterior</div>
+        </button>
+
+        <!-- Card con tabs -->
+        <div class="card">
+          <div class="tab-indicator" id="tabIndicator">1 / 2</div>
+
+          <!-- TAB 1: Información del Evento TCAS RA -->
+          <div class="tab-content active" id="tab1">
+            <div class="card-header">
+              <h2>Información del Evento TCAS RA</h2>
+              <p>Complete los detalles específicos del Resolution Advisory</p>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="evasiveAction">¿Qué maniobra inicial le indicó el sistema TCAS RA? <span class="required">*</span></label>
+                  <select id="evasiveAction" name="evasiveAction" required>
+                    <option value="">Seleccione...</option>
+                    <option value="climb">Climb</option>
+                    <option value="descend">Descend</option>
+                    <option value="level_off">Level off / Adjust Vertical Speed</option>
+                    <option value="maintain_vertical_speed">Maintain Vertical Speed</option>
+                    <option value="monitor_vertical_speed"> Monitor Vertical Speed</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="tcasBlueMode">¿La aeronave cuenta con el modo AP/FD TCAS (TCAS Blue)? <span class="required">*</span></label>
+                  <select id="tcasBlueMode" name="tcasBlueMode" required>
+                    <option value="">Seleccione...</option>
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: Información de la Otra Aeronave -->
+          <div class="tab-content" id="tab2">
+            <div class="card-header">
+              <h2>Información de la Otra Aeronave</h2>
+              <p>Detalles sobre la aeronave que generó la alerta</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group full-width">
+                <label for="atsUnit">¿Qué dependencia ATS atendía el vuelo?<span class="required">*</span></label>
+                <input type="text" id="atsUnit" name="atsUnit" placeholder="Ej:  Bogotá Llegadas , Bogotá Aproximación Terminal Sur" required>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="otherAircraftType">¿Con qué tipo de tráfico tuvo la alerta?</label>
+                  <select id="otherAircraftType" name="otherAircraftType">
+                    <option value="">Seleccione...</option>
+                    <option value="aerolinea">Aerolínea</option>
+                    <option value="estado">Estado</option>
+                    <option value="instruccion">Instrucción</option>
+                    <option value="desconocido">Desconocido</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="flightPlan">¿Bajo qué reglas de vuelo estaba operando el tráfico en conflicto?</label>
+                  <select id="flightPlan" name="flightPlan">
+                    <option value="">Seleccione...</option>
+                    <option value="ifr">IFR</option>
+                    <option value="vfr">VFR</option>
+                    <option value="desconocido">Desconocido</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="airlineName">Nombre de la aerolínea con la cual se presentó el evento</label>
+                  <input type="text" id="airlineName" name="airlineName" placeholder="Ej: Avianca, etc">
+                </div>
+                <div class="form-group">
+                  <label for="aircraftRegistration">Matrícula de la aeronave con la que tuvo el conflicto</label>
+                  <input type="text" id="aircraftRegistration" name="aircraftRegistration" placeholder="Ej: HK-4321">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón siguiente -->
+        <button type="button" id="nextBtn" class="nav-button">
+          <div class="icon">→</div>
+          <div class="text">Siguiente</div>
+        </button>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+        <button type="submit" id="submitBtn" class="btn" disabled>Continuar a Descripción del Evento</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    let currentTab = 1;
+    const totalTabs = 2;
+    const allRequired = ['evasiveAction','tcasBlueMode']; // del contenido original
+
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function updateTabDisplay() {
+      for (let i=1;i<=totalTabs;i++){
+        const tab = document.getElementById('tab'+i);
+        tab.classList.toggle('active', i===currentTab);
+      }
+      document.getElementById('tabIndicator').textContent = `${currentTab} / ${totalTabs}`;
+      prevBtn.disabled = currentTab===1;
+      nextBtn.disabled = currentTab===totalTabs || !validateCurrentTab();
+      submitBtn.disabled = !(validateAllRequired() && currentTab === totalTabs);
+      document.getElementById('progressFill').style.width = `50%`;
+    }
+
+    function validateCurrentTab(){
+      let requiredIds = [];
+      switch(currentTab){
+        case 1: requiredIds=['evasiveAction','tcasBlueMode']; break;
+        case 2: requiredIds=[]; break; // todos opcionales
+      }
+      return requiredIds.every(id=>{
+        const el=document.getElementById(id);
+        return el && el.value.trim()!=='';
+      });
+    }
+
+    function validateAllRequired(){
+      return allRequired.every(id=>{
+        const el=document.getElementById(id);
+        return el && el.value.trim()!=='';
+      });
+    }
+
+    prevBtn.addEventListener('click',()=>{ if(currentTab>1){ currentTab--; updateTabDisplay(); } });
+    nextBtn.addEventListener('click',()=>{
+      if(!validateCurrentTab()){
+        alert('Por favor complete los campos obligatorios de esta sección antes de continuar.');
+        return;
+      }
+      if(currentTab<totalTabs){ currentTab++; updateTabDisplay(); }
+    });
+
+    document.getElementById('tcasRaForm').addEventListener('input', updateTabDisplay);
+
+    document.getElementById('tcasRaForm').addEventListener('submit', e=>{
+      e.preventDefault();
+      if(!validateAllRequired()){
+        alert('Por favor complete todos los campos obligatorios marcados con * en todas las secciones');
+        return;
+      }
+      const formData = new FormData(e.target);
+      const tcasRaData = {};
+      for(let [key,value] of formData.entries()){ tcasRaData[key]=value; }
+
+      const existingData = JSON.parse(sessionStorage.getItem('flightEventData')||'{}');
+      const combinedData = {...existingData, tcasRaDetails: tcasRaData};
+      sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+      console.log('Datos TCAS RA guardados:', tcasRaData);
+
+      window.location.href='../title_desc.html';
+    });
+
+    // Inicializa con datos previos si existen
+    (function initFromSession(){
+      const saved = JSON.parse(sessionStorage.getItem('flightEventData')||'{}');
+      if(saved.tcasRaDetails){
+        const data = saved.tcasRaDetails;
+        for(const key in data){
+          const el = document.getElementById(key);
+          if(el) el.value = data[key];
+        }
+      }
+    })();
+
+    updateTabDisplay();
+  </script>
+</body>
+</html>

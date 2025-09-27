@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información Personal - Sistema de Seguridad Operacional</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Sistema de Reportes de Seguridad Operacional</h1>
+                <p>Registro de Eventos y Peligros</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="step-text">Paso 6 de 6: Información Personal del Reportante</div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Información del Reportante</h2>
+                <p>Complete los datos de la persona que reporta el evento de seguridad operacional</p>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Confidencialidad:</strong> La información proporcionada será tratada según la politica de confidencialiad y no punitividad.
+                     de la organización.
+                </div>
+
+                <form id="reporterForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName">Nombres <span class="required">*</span></label>
+                            <input type="text" id="firstName" name="firstName" required placeholder="Juan" pattern="^[A-Za-zÀ-ÿ\s]+$">
+                            <span class="error-message" id="firstNameError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Apellidos <span class="required">*</span></label>
+                            <input type="text" id="lastName" name="lastName" required placeholder="Pérez" pattern="^[A-Za-zÀ-ÿ\s]+$">
+                            <span class="error-message" id="lastNameError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo Electrónico <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" required placeholder="correo@ejemplo.com">
+                            <span class="error-message" id="emailError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Área a la que pertenezco</label>
+                            <input type="text" id="area_reportante" name="area_reportante" maxlength="40">
+                            <span class="error-message" id="areaError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Base a la que pertenezco</label>
+                            <input type="text" id="base_reportante" name="base_reportante" pattern="^[A-Z]{3}$" 
+                            placeholder="Código IATA: BOG, MDE, CLO..."  maxlength="3" style="text-transform: uppercase;">
+                            <span class="error-message" id="baseError"></span>
+                        </div>
+
+                        <!--
+                        <div class="form-group">
+                            <label for="phone">Teléfono <span class="required">*</span></label>
+                            <input type="tel" id="phone" name="phone" required placeholder="3001234567" pattern="^\d{7,15}$">
+                            <span class="error-message" id="phoneError"></span>
+                        </div>
+                    -->
+
+                    </div>
+                </form>
+                <div class="form-actions">
+                    <button type="button" class="btn" id="continueBtn" disabled>Finalizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        @media (max-width: 768px) {
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+
+    <script src="js/main.js"></script>
+    <script>
+        class PersonalInfoSystem {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                const progressFill = document.getElementById('progressFill');
+                if (progressFill) progressFill.style.width = '100%'; // <-- modificación estilo flights.html
+
+                this.setupFieldValidation();
+                this.bindEvents();
+                this.loadExistingData();
+                this.setupUppercaseInput();
+            }
+
+            setupUppercaseInput() {
+                const baseInput = document.getElementById('base_reportante');
+                if (baseInput) {
+                    baseInput.addEventListener('input', (e) => {
+                        e.target.value = e.target.value.toUpperCase();
+                    });
+                    
+                    // También convertir a mayúsculas cuando se pegue texto
+                    baseInput.addEventListener('paste', (e) => {
+                        setTimeout(() => {
+                            e.target.value = e.target.value.toUpperCase();
+                        }, 10);
+                    });
+                }
+            }
+
+            setupFieldValidation() {
+                const fields = [
+                    { id: 'firstName', name: 'Nombre', pattern: /^[A-Za-zÀ-ÿ\s]+$/ },
+                    { id: 'base_reportante', name: 'Base', pattern: /^[A-Z]{3}$/ },
+                    { id: 'lastName', name: 'Apellido', pattern: /^[A-Za-zÀ-ÿ\s]+$/ },
+                    { id: 'email', name: 'Correo', pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+                    { id: 'phone', name: 'Teléfono', pattern: /^\d{7,15}$/ }
+                ];
+
+                fields.forEach(field => {
+                    const input = document.getElementById(field.id);
+                    const errorSpan = document.getElementById(field.id + 'Error');
+
+                    if (!input || !errorSpan) return;
+
+                    const validate = () => {
+                        const value = input.value.trim();
+                        if (!value) {
+                            errorSpan.textContent = `${field.name} requerido`;
+                            errorSpan.style.display = 'block';
+                            input.classList.add('invalid');
+                            return false;
+                        }
+                        if (!field.pattern.test(value)) {
+                            errorSpan.textContent = `Formato inválido`;
+                            errorSpan.style.display = 'block';
+                            input.classList.add('invalid');
+                            return false;
+                        }
+                        errorSpan.textContent = '';
+                        errorSpan.style.display = 'none';
+                        input.classList.remove('invalid');
+                        return true;
+                    };
+
+                    input.addEventListener('input', () => {
+                        validate();
+                        this.validateForm();
+                    });
+                    input.addEventListener('blur', validate);
+                });
+            }
+
+            bindEvents() {
+                const form = document.getElementById('reporterForm');
+                if (form) {
+                    const inputs = form.querySelectorAll('input[required]');
+                    inputs.forEach(input => {
+                        input.addEventListener('input', () => this.validateForm());
+                    });
+                }
+
+                document.getElementById('continueBtn').addEventListener('click', () => {
+                    this.proceedToNext();
+                });
+            }
+
+            validateForm() {
+                const form = document.getElementById('reporterForm');
+                if (!form) return false;
+
+                let isValid = true;
+                const requiredInputs = form.querySelectorAll('input[required]');
+                
+                requiredInputs.forEach(input => {
+                    if (!input.value.trim() || input.classList.contains('invalid')) {
+                        isValid = false;
+                    }
+                });
+
+                const continueBtn = document.getElementById('continueBtn');
+                if (continueBtn) continueBtn.disabled = !isValid;
+
+                return isValid;
+            }
+
+            collectFormData() {
+                const forms = [document.getElementById('reporterForm'), document.getElementById('additionalForm')];
+                const data = {};
+                
+                forms.forEach(form => {
+                    if (form) {
+                        const formData = new FormData(form);
+                        for (let [key, value] of formData.entries()) {
+                            data[key] = value.trim();
+                        }
+                    }
+                });
+                
+                data.timestamp = new Date().toISOString();
+                return data;
+            }
+
+            saveToSessionStorage() {
+                const data = this.collectFormData();
+                const existingData = JSON.parse(sessionStorage.getItem('safetyReportData') || '{}');
+                
+                const combinedData = {
+                    ...existingData,
+                    reporter: data
+                };
+                
+                sessionStorage.setItem('safetyReportData', JSON.stringify(combinedData));
+            }
+
+            loadExistingData() {
+                const existingData = JSON.parse(sessionStorage.getItem('safetyReportData') || '{}');
+                if (existingData.reporter) {
+                    const reporterData = existingData.reporter;
+                    
+                    Object.keys(reporterData).forEach(key => {
+                        const input = document.getElementById(key);
+                        if (input && reporterData[key]) {
+                            input.value = reporterData[key];
+                        }
+                    });
+                    
+                    setTimeout(() => this.validateForm(), 100);
+                }
+            }
+
+            proceedToNext() {
+                if (!this.validateForm()) {
+                    return;
+                }
+
+                this.saveToSessionStorage();
+                
+                window.location.href = 'end.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new PersonalInfoSystem();
+        });
+    </script>
+</body>
+</html>

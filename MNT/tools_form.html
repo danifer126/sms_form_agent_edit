@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Herramientas - Ingeniería y Mantenimiento</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🔧</div>
+            <div>
+                <h1>Herramientas</h1>
+                <p>Registro detallado de evento relacionado con herramientas</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 5: Información Específica - Herramientas</div>
+        </div>
+
+        <form id="toolsForm">
+            <!-- Información de Herramientas -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información de Herramientas</h2>
+                    <p>Complete los detalles específicos del evento con herramientas</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="workOrder">N.º de orden de trabajo (WO) o registro en libro de vuelo (si aplica)</label>
+                        <input type="text" id="workOrder" name="workOrder" placeholder="Ej: WO123456">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('maintenanceEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Herramientas:', data);
+            }
+
+            document.getElementById('toolsForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const toolsData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    toolsData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('maintenanceEventData') || '{}');
+                const combinedData = { ...existingData, toolsDetails: toolsData };
+                
+                sessionStorage.setItem('maintenanceEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc_alternative.html';
+            }
+        });
+    </script>
+</body>
+</html>

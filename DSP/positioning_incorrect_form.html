@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Posicionamiento Incorrecto - Despacho</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">📋</div>
+            <div>
+                <h1>Posicionamiento Incorrecto de Carga</h1>
+                <p>Registro detallado de posicionamiento incorrecto de carga</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 5: Información Específica - Posicionamiento Incorrecto</div>
+        </div>
+
+        <form id="positioningForm">
+            <!-- Información del Posicionamiento Incorrecto -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Posicionamiento Incorrecto</h2>
+                    <p>Complete los detalles específicos del posicionamiento incorrecto de carga</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="incorrectReason">El posicionamiento incorrecto fue por: <span class="required">*</span></label>
+                        <select id="incorrectReason" name="incorrectReason" required>
+                            <option value="">Seleccione...</option>
+                            <option value="cague_diferente_lir">Cargue diferente al LIR -FM Mobile</option>
+                            <option value="limite_estructural">Carga excede el límite estructural de la posición</option>
+                            <option value="segregacion_peligrosas">Segregación de mercancías peligrosas</option>
+                        </select>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="identifiedBeforeFlight">La discrepancia se identificó antes del inicio del vuelo <span class="required">*</span></label>
+                            <select id="identifiedBeforeFlight" name="identifiedBeforeFlight" required>
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="palletNumber">Número de palet o guía aérea</label>
+                            <input type="text" id="palletNumber" name="palletNumber" placeholder="Ej: PAK123456 o 123-45678901">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Información de Vuelo</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('dispatchEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Posicionamiento Incorrecto:', data);
+            }
+
+            document.getElementById('positioningForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const positioningData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    positioningData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('dispatchEventData') || '{}');
+                const combinedData = { ...existingData, positioningDetails: positioningData };
+                
+                sessionStorage.setItem('dispatchEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

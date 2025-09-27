@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Errores de Comunicación - Operaciones en Tierra</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">📡</div>
+            <div>
+                <h1>Errores en Comunicación Tierra-Avión</h1>
+                <p>Registro detallado de errores de comunicación durante movimiento de aeronaves</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Comunicación</div>
+        </div>
+
+        <form id="communicationErrorsForm">
+            <!-- Información del Movimiento -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Movimiento de la Aeronave</h2>
+                    <p>Seleccione la fase o movimiento en la que ocurrió el error</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="aircraftPhase">Fase o movimiento de la aeronave: <span class="required">*</span></label>
+                        <select id="aircraftPhase" name="aircraftPhase" required>
+                            <option value="">Seleccione...</option>
+                            <option value="parqueo">Parqueo</option>
+                            <option value="traslado">Traslado</option>
+                            <option value="pushback">Pushback</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles del Error de Comunicación -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Detalles del Error de Comunicación</h2>
+                    <p>Complete los detalles específicos del error</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="communicationIssue">Indique qué sucedió: <span class="required">*</span></label>
+                        <select id="communicationIssue" name="communicationIssue" required>
+                            <option value="">Seleccione...</option>
+                            <option value="falla_equipo">Falla de equipo de comunicación</option>
+                            <option value="error_fraseologia">Error de fraseología</option>
+                            <option value="error_indicaciones">Error en indicaciones visuales</option>
+                            <option value="dificultades_idioma">Dificultades de idioma</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width" id="equipmentFailureGroup" style="display: none; margin-top:10px;">
+                        <label for="equipmentType">Si hubo falla de equipo indique cuál:</label>
+                        <select id="equipmentType" name="equipmentType">
+                            <option value="">Seleccione...</option>
+                            <option value="interphone">Interphone</option>
+                            <option value="radio">Radio</option>
+                            <option value="palas">Palas</option>
+                            <option value="otras">Otras</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('communicationIssue').addEventListener('change', function() {
+                const equipmentGroup = document.getElementById('equipmentFailureGroup');
+                const equipmentSelect = document.getElementById('equipmentType');
+                
+                if (this.value === 'falla_equipo') {
+                    equipmentGroup.style.display = 'block';
+                    equipmentSelect.required = true;
+                } else {
+                    equipmentGroup.style.display = 'none';
+                    equipmentSelect.required = false;
+                    equipmentSelect.value = '';
+                }
+            });
+
+            document.getElementById('communicationErrorsForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const communicationData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    communicationData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('groundHandlingData') || '{}');
+                const combinedData = { ...existingData, communicationErrorDetails: communicationData };
+                
+                sessionStorage.setItem('groundHandlingData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            });
+        });
+    </script>
+</body>
+</html>

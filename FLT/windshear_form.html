@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario FLT - Windshear</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Windshear</h1>
+                <p>Registro detallado de evento de Windshear</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Windshear</div>
+        </div>
+
+        <form id="windshearForm">
+            <!-- Información del Evento Windshear -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Evento Windshear</h2>
+                    <p>Complete los detalles específicos del evento</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="detectionMethod">La advertencia del windshear fue: <span class="required">*</span></label>
+                            <select id="detectionMethod" name="detectionMethod" required>
+                                <option value="">Seleccione...</option>
+                                <option value="preditive_mode">Mode predictivo (Radar meteorológico)</option>
+                                <option value="reactive_mode"> Modo reactivo (EGPWS/GPWS)</option>
+                                
+                            </select>
+                        </div>                
+                    </div>
+
+    
+                </div>
+            </div>
+
+           
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Windshear:', data);
+            }
+
+            document.getElementById('windshearForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const windshearData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    windshearData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, windshearDetails: windshearData };
+                
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Falla Técnica - Aeronave</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .checkbox-item:hover {
+            background: #eef6ff;
+            border-color: #3399ff;
+        }
+        .checkbox-item input {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Reporte de Falla Técnica</h1>
+                <p>Registro de fallas técnicas presentadas en aeronaves</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Reporte de Falla Técnica</div>
+        </div>
+
+        <form id="technicalFailureForm">
+            <!-- Información de la Falla Técnica -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información de la Falla Técnica</h2>
+                    <p>Complete los detalles específicos de la falla técnica presentada</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label>¿Qué parte(s)/sistema(s) de la aeronave se vio afectado? <span class="required">*</span></label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="affectedSystems" value="sistemas"> Sistemas
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="affectedSystems" value="motores"> Motores
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="affectedSystems" value="fuselaje"> Fuselaje
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="affectedSystems" value="avionica"> Aviónica
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="affectedSystems" value="cabina"> Cabina
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="workOrderNumber">N° de orden de trabajo (WO) o registro en libro de vuelo (si aplica)</label>
+                        <input type="text" id="workOrderNumber" name="workOrderNumber" placeholder="Ej: WO-12345 o Libro de Vuelo pág. 42">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Falla Técnica:', data);
+            }
+
+            document.getElementById('technicalFailureForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const checkboxes = document.querySelectorAll('input[name="affectedSystems"]:checked');
+                const affectedSystems = Array.from(checkboxes).map(cb => cb.value);
+
+                if (affectedSystems.length === 0) {
+                    alert("Por favor seleccione al menos una parte/sistema afectado.");
+                    return;
+                }
+
+                const workOrderNumber = document.getElementById("workOrderNumber").value;
+
+                const failureData = {
+                    affectedSystems,
+                    workOrderNumber: workOrderNumber || null
+                };
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, technicalFailureDetails: failureData };
+
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Falla de Software - Operaciones</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .checkbox-item:hover {
+            background: #eef6ff;
+            border-color: #3399ff;
+        }
+        .checkbox-item input {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Falla de Software</h1>
+                <p>Registro detallado del evento de falla en aplicativos</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Falla de Software</div>
+        </div>
+
+        <form id="itFailureForm">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Evento de Falla de Software</h2>
+                    <p>Complete los detalles específicos del evento</p>
+                </div>
+
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <!-- Selección múltiple con el mismo espacio que GPWS -->
+                        <div class="form-group full-width">
+                            <label>¿Cuál software falló? <span class="required">*</span></label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="AIRCOM">AIRCOM</label>
+                                <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="AMADEUS">AMADEUS</label>
+                                <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="AMOS">AMOS</label>
+                                <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="LIDO">LIDO</label>
+                                <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="LIDO CREW BREIFING">LIDO CREW BREIFING</label>
+                                <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="LIDO WINGS">LIDO WINGS</label>
+                                <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="READ BEFORE FLIGHT">READ BEFORE FLIGHT</label>
+                                <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="NETLINE">NETLINE</label>
+                            </div>
+                        </div>
+
+                        <!-- Lista simple debajo -->
+                        <div class="form-group">
+                            <label for="P_IT_002">¿Qué tipo de falla presentó? <span class="required">*</span></label>
+                            <select id="P_IT_002" name="P_IT_002" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Falla conexión de red">Falla conexión de red</option>
+                                <option value="Se cierra o deja de funcionar">Se cierra o deja de funcionar</option>
+                                <option value="Más lento de lo esperado">Más lento de lo esperado</option>
+                                <option value="Datos o cálculos incorrectos">Datos o cálculos incorrectos</option>
+                                <option value="Problema de acceso de usuarios">Problema de acceso de usuarios</option>
+                                <option value="Integración con otros aplicativos">Integración con otros aplicativos</option>
+                                <option value="Fallas de interfaz o visualización">Fallas de interfaz o visualización</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Falla de Software:', data);
+            }
+
+            document.getElementById('itFailureForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const selectedApps = Array.from(
+                    document.querySelectorAll('input[name="affectedSystems"]:checked')
+                ).map(i => i.value);
+
+                const itData = {
+                    P_IT_001: selectedApps,
+                    P_IT_002: document.getElementById('P_IT_002').value
+                };
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, softwareFailureDetails: itData };
+
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

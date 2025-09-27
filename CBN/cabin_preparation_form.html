@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Preparación de Cabina - Operaciones de Vuelo</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Preparación de Cabina</h1>
+                <p>Registro detallado de eventos en preparación de cabina</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Preparación de Cabina</div>
+        </div>
+
+        <form id="preparacionCabinaForm">
+            <!-- Información del Evento de Preparación -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Evento de Preparación</h2>
+                    <p>Complete los detalles específicos del procedimiento de preparación</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="flightPhase">¿Durante qué fase observó una falla o incumplimiento en los procedimientos? <span class="required">*</span></label>
+                        <select id="flightPhase" name="flightPhase" required>
+                            <option value="">Seleccione...</option>
+                            <option value="despegue">Despegue</option>
+                            <option value="aterrizaje">Aterrizaje</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width" id="takeoffProcedures" style="display: none;">
+                        <label for="takeoffProcedure">Seleccione el procedimiento en el que observó una falla o incumplimiento</label>
+                        <select id="takeoffProcedure" name="takeoffProcedure">
+                            <option value="">Seleccione...</option>
+                            <option value="aseguramiento_bins">Aseguramiento de bins</option>
+                            <option value="briefing_salidas">Briefing salidas de emergencia</option>
+                            <option value="armado_toboganes">Armado de toboganes</option>
+                            <option value="revision_cabina">Revisión de cabina (Silla, baños, ventanas, cinturones)</option>
+                            <option value="aseguramiento_galley">Aseguramiento de elementos de galley</option>
+                            <option value="cabin_ready_despegue">Confirmación de cabina lista para despegue (Cabin Ready)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width" id="landingProcedures" style="display: none;">
+                        <label for="landingProcedure">Seleccione el procedimiento en el que observó una falla o incumplimiento</label>
+                        <select id="landingProcedure" name="landingProcedure">
+                            <option value="">Seleccione...</option>
+                            <option value="aseguramiento_bins">Aseguramiento de bins</option>
+                            <option value="revision_cabina">Revisión de cabina (Silla, baños, ventanas, cinturones)</option>
+                            <option value="aseguramiento_galley">Aseguramiento de elementos de galley</option>
+                            <option value="cabin_ready_aterrizaje">Confirmación de cabina lista para el aterrizaje (Cabin Ready)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Preparación de Cabina:', data);
+            }
+
+            document.getElementById('preparacionCabinaForm').addEventListener('submit', handleFormSubmit);
+
+            // Mostrar/ocultar secciones según la fase de vuelo
+            document.getElementById('flightPhase').addEventListener('change', function() {
+                const phase = this.value;
+                const takeoffProcedures = document.getElementById('takeoffProcedures');
+                const landingProcedures = document.getElementById('landingProcedures');
+
+                // Ocultar ambas secciones
+                takeoffProcedures.style.display = 'none';
+                landingProcedures.style.display = 'none';
+
+                // Mostrar la sección correspondiente
+                if (phase === 'despegue') {
+                    takeoffProcedures.style.display = 'block';
+                } else if (phase === 'aterrizaje') {
+                    landingProcedures.style.display = 'block';
+                }
+            });
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const preparacionCabinaData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    preparacionCabinaData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, preparacionCabinaDetails: preparacionCabinaData };
+                
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

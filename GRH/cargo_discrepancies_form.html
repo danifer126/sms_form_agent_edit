@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Discrepancias de Carga - Operaciones de Carga</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">📦</div>
+            <div>
+                <h1>Discrepancias de Carga</h1>
+                <p>Registro detallado de discrepancias en el manejo y documentación de carga</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Discrepancias de Carga</div>
+        </div>
+
+        <form id="cargoDiscrepancyForm">
+            <!-- Tipo de Discrepancia -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Tipo de Discrepancia</h2>
+                    <p>Identifique el tipo de suceso que desea reportar</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="discrepancyType">¿Qué tipo de suceso desea reportar? <span class="required">*</span></label>
+                        <select id="discrepancyType" name="discrepancyType" required>
+                            <option value="">Seleccione...</option>
+                            <option value="posicionamiento_incorrecto">Posicionamiento incorrecto de carga</option>
+                            <option value="discrepancia_documentacion">Discrepancia en documentación (LIR/LCS/NOTOC/W&B/Pallet TAG)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles del Posicionamiento Incorrecto -->
+            <div class="card" id="positioningSection" style="display: none;">
+                <div class="card-header">
+                    <h2>Detalles del Posicionamiento Incorrecto</h2>
+                    <p>Especifique la causa del posicionamiento inadecuado</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="positioningReason">El posicionamiento incorrecto fue por: <span class="required">*</span></label>
+                        <select id="positioningReason" name="positioningReason">
+                            <option value="">Seleccione...</option>
+                            <option value="cargue_diferente_lir">Cargue diferente al LIR -FM Mobile</option>
+                            <option value="carga_excede_limite">Carga excede el límite estructural de la posición</option>
+                            <option value="segregacion_mercancias">Segregación de mercancías peligrosas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles de la Discrepancia en Documentación -->
+            <div class="card" id="documentationSection" style="display: none;">
+                <div class="card-header">
+                    <h2>Detalles de la Discrepancia en Documentación</h2>
+                    <p>Información específica sobre los documentos con discrepancia</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="discrepancyTypeDoc">Indique el tipo de discrepancia: <span class="required">*</span></label>
+                        <select id="discrepancyTypeDoc" name="discrepancyTypeDoc">
+                            <option value="">Seleccione...</option>
+                            <option value="discrepancia_peso">Discrepancia de peso</option>
+                            <option value="carga_mal_declarada">Carga mal declarada</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width" id="weightDiscrepancySection" style="display: none;">
+                        <label for="weightDifference">Si hubo discrepancia de peso, indique la diferencia en kilogramos:</label>
+                        <input type="text" id="weightDifference" name="weightDifference" placeholder="Ingrese la diferencia en kg">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Seleccione el o los documentos con discrepancia:</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lir" name="documentsWithDiscrepancy" value="LIR">
+                                <label for="lir">LIR</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lcs" name="documentsWithDiscrepancy" value="LCS">
+                                <label for="lcs">LCS</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="notoc" name="documentsWithDiscrepancy" value="NOTOC">
+                                <label for="notoc">NOTOC</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="wb" name="documentsWithDiscrepancy" value="W & B">
+                                <label for="wb">W & B</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="palletTag" name="documentsWithDiscrepancy" value="Pallet TAG">
+                                <label for="palletTag">Pallet TAG</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Adicional -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información Adicional</h2>
+                    <p>Detalles complementarios sobre el evento o peligro</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="identifiedBeforeFlight">Se identificó antes del inicio del vuelo: <span class="required">*</span></label>
+                        <select id="identifiedBeforeFlight" name="identifiedBeforeFlight" required>
+                            <option value="">Seleccione...</option>
+                            <option value="si">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="palletOrAwbNumber">Ingrese el Número de palet o guía aérea de la carga relacionada:</label>
+                        <input type="text" id="palletOrAwbNumber" name="palletOrAwbNumber" placeholder="Ej: PAL-001, AWB-123456">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('cargoOperationsData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Discrepancias de Carga:', data);
+            }
+
+            const discrepancyType = document.getElementById('discrepancyType');
+            const positioningSection = document.getElementById('positioningSection');
+            const documentationSection = document.getElementById('documentationSection');
+            const discrepancyTypeDoc = document.getElementById('discrepancyTypeDoc');
+            const weightDiscrepancySection = document.getElementById('weightDiscrepancySection');
+
+            // Mostrar/ocultar secciones basado en el tipo de discrepancia
+            discrepancyType.addEventListener('change', function() {
+                if (this.value === 'posicionamiento_incorrecto') {
+                    positioningSection.style.display = 'block';
+                    documentationSection.style.display = 'none';
+                    // Hacer requerido el campo de razón de posicionamiento
+                    document.getElementById('positioningReason').setAttribute('required', 'required');
+                    document.getElementById('discrepancyTypeDoc').removeAttribute('required');
+                } else if (this.value === 'discrepancia_documentacion') {
+                    positioningSection.style.display = 'none';
+                    documentationSection.style.display = 'block';
+                    // Hacer requerido el campo de tipo de discrepancia en documentación
+                    document.getElementById('discrepancyTypeDoc').setAttribute('required', 'required');
+                    document.getElementById('positioningReason').removeAttribute('required');
+                } else {
+                    positioningSection.style.display = 'none';
+                    documentationSection.style.display = 'none';
+                    document.getElementById('positioningReason').removeAttribute('required');
+                    document.getElementById('discrepancyTypeDoc').removeAttribute('required');
+                }
+            });
+
+            // Mostrar/ocultar campo de diferencia de peso
+            discrepancyTypeDoc.addEventListener('change', function() {
+                if (this.value === 'discrepancia_peso') {
+                    weightDiscrepancySection.style.display = 'block';
+                } else {
+                    weightDiscrepancySection.style.display = 'none';
+                }
+            });
+
+            document.getElementById('cargoDiscrepancyForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const discrepancyData = {};
+                
+                // Manejar checkboxes múltiples
+                const documentsSelected = [];
+                const checkboxes = document.querySelectorAll('input[name="documentsWithDiscrepancy"]:checked');
+                checkboxes.forEach(checkbox => {
+                    documentsSelected.push(checkbox.value);
+                });
+                
+                for (let [key, value] of formData.entries()) {
+                    if (key !== 'documentsWithDiscrepancy') {
+                        discrepancyData[key] = value;
+                    }
+                }
+                
+                discrepancyData.documentsWithDiscrepancy = documentsSelected;
+
+                const existingData = JSON.parse(sessionStorage.getItem('cargoOperationsData') || '{}');
+                const combinedData = { ...existingData, cargoDiscrepancyDetails: discrepancyData };
+                
+                sessionStorage.setItem('cargoOperationsData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

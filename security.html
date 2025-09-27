@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Específico - Seguridad</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🛡️</div>
+            <div>
+                <h1>Formulario Específico - Seguridad</h1>
+                <p>Registro de eventos relacionados con seguridad y salud ocupacional</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="step-text">Paso 2 de 2: Detalle del Evento</div>
+        </div>
+
+        <!-- Selección de tipo de evento -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Tipo de Evento de Seguridad</h2>
+                <p>Seleccione el tipo de evento que desea reportar</p>
+            </div>
+            <div class="card-body">
+                <div id="eventTypeError" class="alert alert-error" style="display: none;">
+                    <strong>Error:</strong> Debe seleccionar un tipo de evento antes de continuar.
+                </div>
+
+                <div class="area-selection">
+                    <div class="area-card" data-event="occupational_health" title="Incidentes relacionados con salud ocupacional, física y ambiental del personal">
+                        <div class="area-icon">🏥</div>
+                        <div class="area-title">Salud Ocupacional</div>
+                    </div>
+
+                    <div class="area-card" data-event="airport_security" title="Eventos relacionados con la seguridad aeroportuaria y controles de acceso">
+                        <div class="area-icon">🛡️</div>
+                        <div class="area-title">Seguridad Aeroportuaria</div>
+                    </div>
+
+                    <div class="area-card" data-event="other" title="Otros eventos no especificados relacionados con seguridad">
+                        <div class="area-icon">❓</div>
+                        <div class="area-title">Otro</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card para descripción del evento -->
+        <div class="card" id="descriptionCard" style="display:none;">
+            <div class="card-header">
+                <h2>Descripción del Evento</h2>
+                <p>Complete la información detallada del evento</p>
+            </div>
+            <div class="card-body">
+                <div class="form-group full-width">
+                    <label for="securityDetails">Descripción del Evento <span class="required">*</span></label>
+                    <textarea id="securityDetails" name="securityDetails" placeholder="Describa detalladamente el evento"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón continuar -->
+        <div class="card">
+            <div class="card-body">
+                <div class="form-actions">
+                    <button type="button" class="btn" id="nextStepBtn" disabled>Continuar al siguiente paso</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        class SecurityEventForm {
+            constructor() {
+                this.selectedEventType = null;
+                this.init();
+            }
+
+            init() {
+                const progressFill = document.getElementById('progressFill');
+                if (progressFill) progressFill.style.width = '40%';
+
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                document.querySelectorAll('.area-card[data-event]').forEach(card => {
+                    card.addEventListener('click', () => this.selectEventType(card));
+                });
+
+                const textarea = document.getElementById('securityDetails');
+                textarea.addEventListener('input', () => this.validateForm());
+
+                const nextBtn = document.getElementById('nextStepBtn');
+                nextBtn.addEventListener('click', () => this.handleNext());
+            }
+
+            selectEventType(selectedCard) {
+                document.querySelectorAll('.area-card[data-event]').forEach(card => {
+                    card.classList.remove('selected');
+                });
+
+                selectedCard.classList.add('selected');
+                this.selectedEventType = selectedCard.dataset.event;
+
+                const eventTypeError = document.getElementById('eventTypeError');
+                if (eventTypeError) eventTypeError.style.display = 'none';
+
+                this.showDescriptionCard();
+                this.validateForm();
+
+                setTimeout(() => {
+                    const descriptionCard = document.getElementById('descriptionCard');
+                    if (descriptionCard) descriptionCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 150);
+            }
+
+            showDescriptionCard() {
+                const descriptionCard = document.getElementById('descriptionCard');
+                descriptionCard.style.display = 'block';
+            }
+
+            validateForm() {
+                const textarea = document.getElementById('securityDetails');
+                const nextBtn = document.getElementById('nextStepBtn');
+
+                let isValid = this.selectedEventType && textarea.value.trim() !== '';
+                nextBtn.disabled = !isValid;
+
+                return isValid;
+            }
+
+            handleNext() {
+                if (!this.validateForm()) {
+                    const eventTypeError = document.getElementById('eventTypeError');
+                    if (!this.selectedEventType && eventTypeError) {
+                        eventTypeError.style.display = 'block';
+                        eventTypeError.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    return;
+                }
+
+                const data = {
+                    securityEventType: this.selectedEventType,
+                    securityDetails: document.getElementById('securityDetails').value.trim(),
+                    timestamp: new Date().toISOString()
+                };
+
+                sessionStorage.setItem('securityEventData', JSON.stringify(data));
+                // Simula ir al siguiente paso
+                window.location.href = 'flight_info.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new SecurityEventForm();
+        });
+    </script>
+</body>
+</html>

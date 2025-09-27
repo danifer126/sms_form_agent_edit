@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Manejo de Carga y Equipaje - Operaciones de Carga</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">📦</div>
+            <div>
+                <h1>Manejo de Carga y Equipaje</h1>
+                <p>Registro detallado de eventos durante la manipulación de carga y equipaje</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Manejo de Carga y Equipaje</div>
+        </div>
+
+        <form id="cargoHandlingForm">
+            <!-- Tipo de Suceso -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Tipo de Suceso</h2>
+                    <p>Identifique el tipo de evento que desea reportar</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="eventType">¿Qué tipo de suceso desea reportar? <span class="required">*</span></label>
+                        <select id="eventType" name="eventType" required>
+                            <option value="">Seleccione...</option>
+                            <option value="caida_palet_carga_equipaje">Caída de palet, carga o equipaje</option>
+                            <option value="problema_armado_palets">Problema en armado de palets (fijación, malla, estado, marcación)</option>
+                            <option value="carga_mal_asegurada">Carga mal asegurada en la aeronave (Carga - equipaje)</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles de Caída -->
+            <div class="card" id="fallSection" style="display: none;">
+                <div class="card-header">
+                    <h2>Detalles de la Caída</h2>
+                    <p>Información específica sobre el lugar y equipo involucrado</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="fallLocation">¿Dónde ocurrió la caída del pallet o la carga? <span class="required">*</span></label>
+                        <select id="fallLocation" name="fallLocation">
+                            <option value="">Seleccione...</option>
+                            <option value="fuera_diamante_seguridad">Fuera del diamante de seguridad</option>
+                            <option value="dentro_diamante_seguridad">Dentro del diamante de seguridad</option>
+                            <option value="almacen">Almacén</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="fallEquipment">¿De qué equipo o vehículo cayó? <span class="required">*</span></label>
+                        <select id="fallEquipment" name="fallEquipment">
+                            <option value="">Seleccione...</option>
+                            <option value="stack">De un stack</option>
+                            <option value="dolly">De un dolly</option>
+                            <option value="cargo_loader">De un cargo loader</option>
+                            <option value="conveyor_belt">Del conveyor belt</option>
+                            <option value="bodega_aeronave">De la bodega de la aeronave</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles de Aseguramiento -->
+            <div class="card" id="securingSection" style="display: none;">
+                <div class="card-header">
+                    <h2>Falla en el Aseguramiento</h2>
+                    <p>Detalles sobre la falla en el aseguramiento de la carga</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="securingFailure">¿Cuál fue la falla en el aseguramiento de la carga? <span class="required">*</span></label>
+                        <select id="securingFailure" name="securingFailure">
+                            <option value="">Seleccione...</option>
+                            <option value="lachs_bloqueos_no_activados">Lachs/bloqueos no activados</option>
+                            <option value="mallas_ausentes_mal_usadas">Mallas ausentes o mal usadas</option>
+                            <option value="correas_mal_colocadas">Correas mal colocadas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Adicional -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información Adicional</h2>
+                    <p>Identificación del pallet o guía aérea involucrada</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="palletOrAwbNumber">Número de pallet o guía aérea</label>
+                        <input type="text" id="palletOrAwbNumber" name="palletOrAwbNumber" placeholder="Ej: PAL-001, AWB-123456">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('cargoOperationsData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Manejo de Carga y Equipaje:', data);
+            }
+
+            const eventType = document.getElementById('eventType');
+            const fallSection = document.getElementById('fallSection');
+            const securingSection = document.getElementById('securingSection');
+
+            // Mostrar/ocultar secciones basado en el tipo de evento
+            eventType.addEventListener('change', function() {
+                // Resetear secciones
+                fallSection.style.display = 'none';
+                securingSection.style.display = 'none';
+                
+                // Remover requerimientos
+                document.getElementById('fallLocation').removeAttribute('required');
+                document.getElementById('fallEquipment').removeAttribute('required');
+                document.getElementById('securingFailure').removeAttribute('required');
+
+                if (this.value === 'caida_palet_carga_equipaje') {
+                    fallSection.style.display = 'block';
+                    document.getElementById('fallLocation').setAttribute('required', 'required');
+                    document.getElementById('fallEquipment').setAttribute('required', 'required');
+                } else if (this.value === 'carga_mal_asegurada') {
+                    securingSection.style.display = 'block';
+                    document.getElementById('securingFailure').setAttribute('required', 'required');
+                }
+            });
+
+            document.getElementById('cargoHandlingForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const handlingData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    handlingData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('cargoOperationsData') || '{}');
+                const combinedData = { ...existingData, cargoHandlingDetails: handlingData };
+                
+                sessionStorage.setItem('cargoOperationsData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

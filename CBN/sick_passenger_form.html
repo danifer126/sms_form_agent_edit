@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Eventos con Pasajeros - Operaciones de Vuelo</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Eventos con Pasajeros</h1>
+                <p>Registro detallado de eventos con pasajeros</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Eventos con Pasajeros</div>
+        </div>
+
+        <form id="eventosPasajerosForm">
+            <!-- Información del Evento con Pasajeros -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Evento con Pasajeros</h2>
+                    <p>Complete los detalles específicos del evento con el pasajero</p>
+                </div>
+                <div class="card-body">
+                    
+                    <div class="form-grid" id="medicalSection">
+                        <div class="form-group">
+                            <label for="firstAidKit">¿Uso el kit de primeros auxilios o medicalkit?</label>
+                            <select id="firstAidKit" name="firstAidKit">
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="kitComplete">¿El kit de primeros auxilios estaba completo y funcional?</label>
+                            <select id="kitComplete" name="kitComplete">
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid" id="medicalSection2" >
+                        <div class="form-group">
+                            <label for="healthProfessional">¿Se recibió apoyo por profesional de la salud?</label>
+                            <select id="healthProfessional" name="healthProfessional">
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="medAirAssistance">¿Se recibió asistencia oportuna de MedAir?</label>
+                            <select id="medAirAssistance" name="medAirAssistance">
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Eventos con Pasajeros:', data);
+            }
+
+            document.getElementById('eventosPasajerosForm').addEventListener('submit', handleFormSubmit);
+
+            // Mostrar/ocultar secciones según el tipo de evento
+            document.getElementById('eventType').addEventListener('change', function() {
+                const eventType = this.value;
+                const medicalSection = document.getElementById('medicalSection');
+                const medicalSection2 = document.getElementById('medicalSection2');
+                const disruptiveSection = document.getElementById('disruptiveSection');
+
+             
+            
+            });
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const eventosPasajerosData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    eventosPasajerosData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, eventosPasajerosDetails: eventosPasajerosData };
+                
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

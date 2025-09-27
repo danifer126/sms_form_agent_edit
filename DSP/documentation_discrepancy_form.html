@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Discrepancia en Documentación - Despacho</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">📋</div>
+            <div>
+                <h1>Discrepancia en Documentación</h1>
+                <p>Registro detallado de discrepancias en documentación de carga</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 5: Información Específica - Discrepancia en Documentación</div>
+        </div>
+
+        <form id="documentationForm">
+            <!-- Información de la Discrepancia -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información de la Discrepancia</h2>
+                    <p>Complete los detalles específicos de la discrepancia en documentación</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label>Seleccione el o los documentos con discrepancia: <span class="required">*</span></label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="discrepantDocuments" value="lir">
+                                <span class="checkmark"></span>
+                                LIR
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="discrepantDocuments" value="lcs">
+                                <span class="checkmark"></span>
+                                LCS
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="discrepantDocuments" value="notoc">
+                                <span class="checkmark"></span>
+                                NOTOC
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="discrepantDocuments" value="wb">
+                                <span class="checkmark"></span>
+                                W & B
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="discrepantDocuments" value="pallet_tag">
+                                <span class="checkmark"></span>
+                                Pallet TAG
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="discrepancyType">Indique el tipo de discrepancia <span class="required">*</span></label>
+                            <select id="discrepancyType" name="discrepancyType" required>
+                                <option value="">Seleccione...</option>
+                                <option value="discrepancia_peso">Discrepancia de peso</option>
+                                <option value="carga_mal_declarada">Carga mal declarada</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="identifiedBeforeFlight">La discrepancia se identificó antes del inicio del vuelo <span class="required">*</span></label>
+                            <select id="identifiedBeforeFlight" name="identifiedBeforeFlight" required>
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid" id="weightDiscrepancyGroup" style="display:none;">
+                        <div class="form-group">
+                            <label for="weightDifference">Si hubo discrepancia de peso, indique la diferencia en kilogramos</label>
+                            <input type="number" id="weightDifference" name="weightDifference" placeholder="Ej: 150" step="0.1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="palletNumber">Número de palet o guía aérea</label>
+                            <input type="text" id="palletNumber" name="palletNumber" placeholder="Ej: PAK123456 o 123-45678901">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Información de Vuelo</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('dispatchEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Discrepancia en Documentación:', data);
+            }
+
+            // Mostrar/ocultar campos según el tipo de discrepancia
+            document.getElementById('discrepancyType').addEventListener('change', function() {
+                const weightGroup = document.getElementById('weightDiscrepancyGroup');
+                if (this.value === 'discrepancia_peso') {
+                    weightGroup.style.display = 'block';
+                } else {
+                    weightGroup.style.display = 'none';
+                }
+            });
+
+            // Validar que al menos un documento esté seleccionado
+            function validateDocuments() {
+                const checkboxes = document.querySelectorAll('input[name="discrepantDocuments"]:checked');
+                return checkboxes.length > 0;
+            }
+
+            document.getElementById('documentationForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                if (!validateDocuments()) {
+                    alert('Debe seleccionar al menos un documento con discrepancia');
+                    return;
+                }
+
+                const formData = new FormData(e.target);
+                const documentationData = {};
+                
+                // Manejar checkboxes múltiples
+                const selectedDocs = [];
+                formData.getAll('discrepantDocuments').forEach(doc => {
+                    selectedDocs.push(doc);
+                });
+                documentationData.discrepantDocuments = selectedDocs;
+
+                // Agregar otros campos
+                for (let [key, value] of formData.entries()) {
+                    if (key !== 'discrepantDocuments') {
+                        documentationData[key] = value;
+                    }
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('dispatchEventData') || '{}');
+                const combinedData = { ...existingData, documentationDetails: documentationData };
+                
+                sessionStorage.setItem('dispatchEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Daño de Equipos - Operaciones en Tierra</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🔧</div>
+            <div>
+                <h1>Daño de Equipos de Tierra</h1>
+                <p>Registro detallado de fallas y daños en equipos de operaciones terrestres</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Daño de Equipos de Tierra</div>
+        </div>
+
+        <form id="equipmentDamageForm">
+            <!-- Información del Equipo -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Equipo Afectado</h2>
+                    <p>Detalles sobre el equipo que presentó la falla o daño</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="equipmentType">Equipo que presentó la falla / daño <span class="required">*</span></label>
+                        <select id="equipmentType" name="equipmentType" required>
+                            <option value="">Seleccione...</option>
+                            <option value="bus_van_carro">Bus - Van - Carro</option>
+                            <option value="montacarga">Montacarga</option>
+                            <option value="conveyor_belt">Conveyor belt</option>
+                            <option value="ulp_pallet">ULP - Pallet</option>
+                            <option value="escalera">Escalera</option>
+                            <option value="camion_servicios">Camión de servicios</option>
+                            <option value="remolque_tractor">Remolque - Tractor</option>
+                            <option value="planta_electrica">Planta eléctrica</option>
+                            <option value="puente_abordaje">Puente de abordaje</option>
+                            <option value="aire_acondicionado">Aire acondicionado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Identificación del Equipo -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Identificación del Equipo</h2>
+                    <p>Información específica para la identificación del equipo involucrado</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="equipmentRegistry">Número o registro del equipo involucrado</label>
+                        <input type="text" id="equipmentRegistry" name="equipmentRegistry" placeholder="Ej: MT-001, BUS-005, TRC-012">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('groundHandlingData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Daño de Equipos:', data);
+            }
+
+            document.getElementById('equipmentDamageForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const equipmentData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    equipmentData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('groundHandlingData') || '{}');
+                const combinedData = { ...existingData, equipmentDamageDetails: equipmentData };
+                
+                sessionStorage.setItem('groundHandlingData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

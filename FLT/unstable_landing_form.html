@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Aproximación Inestable - Operaciones de Vuelo</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Aproximación Inestable con Aterrizaje</h1>
+                <p>Registro detallado del evento de aproximación inestable</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Aproximación Inestable</div>
+        </div>
+
+        <form id="unstableLandingForm">
+           
+
+            <!-- Criterios de Inestabilidad -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Criterios de Inestabilidad</h2>
+                    <p>Seleccione los criterios que aplicaron a la aproximación</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="instabilityCriteria">¿Qué criterio definió la aproximación como inestable?</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="instabilityCriteria" value="velocidad_fuera"> Velocidad (airspeed) fuera de tolerancia</label><br>
+                            <label><input type="checkbox" name="instabilityCriteria" value="actitud_incorrecta"> Actitud de la aeronave (pitch/roll) incorrecta</label><br>
+                            <label><input type="checkbox" name="instabilityCriteria" value="descenso_excesivo"> Régimen de descenso excesivo</label><br>
+                            <label><input type="checkbox" name="instabilityCriteria" value="configuracion_inadecuada"> Configuración de flaps/tren de aterrizaje inadecuada</label><br>
+                            <label><input type="checkbox" name="instabilityCriteria" value="alerta_gpws"> Alerta de proximidad al terreno (GPWS) activa</label><br>
+                            <label><input type="checkbox" name="instabilityCriteria" value="desalineacion"> Desalineación con senda de planeo (GS-LOC-deviación lateral o vertical)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Aproximación Inestable:', data);
+            }
+
+            document.getElementById('unstableLandingForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const unstableLandingData = {};
+
+                // Convertir checkboxes en array
+                unstableLandingData.instabilityCriteria = [];
+                for (let [key, value] of formData.entries()) {
+                    if (key === 'instabilityCriteria') {
+                        unstableLandingData.instabilityCriteria.push(value);
+                    } else {
+                        unstableLandingData[key] = value;
+                    }
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, unstableLandingDetails: unstableLandingData };
+
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

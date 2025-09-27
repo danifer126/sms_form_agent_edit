@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Operación de puertas - Cabina de pasajeros</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Operación de puertas</h1>
+                <p>Registro detallado de eventos o peligros durante la operación de puertas</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Preparación de Cabina</div>
+        </div>
+
+        <form id="dooroperationsForm">
+            <!-- Información del Evento de operación de puertas -->
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Evento durante la operación de puertas de la aeronave</h2>
+                    <p>Complete los detalles específicos del evento de operación de puertas</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="turbulenceAwareness">¿Durante qué fase observó una falla o incumplimiento en los procedimientos? <span class="required">*</span></label>
+                            <select id="turbulenceAwareness" name="turbulenceAwareness" required>
+                                <option value="">Seleccione...</option>
+                                <option value="open_doors">Apertura de puertas</option>
+                                <option value="close_doors">Cierre de puertas</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="seatbeltSign">  Seleccione el procedimiento en el que observó una falla o incumplimiento <span class="required">*</span></label>
+                            <select id="seatbeltSign" name="seatbeltSign" required>
+                                <option value="">Seleccione...</option>
+                                <option value="handling_no_autorized">Manipulación no autorizada</option>
+                                <option value="Inadvertent_Slide_Deployment">  Incorrecto armado/desarmado de deslizadores </option>
+                                <option value="nad_use-of_safety_strips">  No uso de safety strip cuando sea requerido </option>
+                                <option value="doors_hitting">  Golpe a puertas </option>
+                                <option value="other_event">  Otro </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="serviceStop">¿Qué personal externo a al personal de cabina de pasajeros estuvo involucrado?</label>
+                            <select id="serviceStop" name="serviceStop">
+                                <option value="">Seleccione...</option>
+                                <option value="ground_staff">Personal de tierra</option>
+                                <option value="atos_staff">Personal de aeropuertos</option>
+                                <option value="manto_staff">Personal de mantenimiento</option>
+                                <option value="other_staff">Otro</option>
+                                <option value="none_staff">Ninguno</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Operaciones de puerta:', data);
+            }
+
+            const form = document.getElementById('dooroperationsForm');
+            form.addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const preparacionCabinaData = {};
+                for (const [key, value] of formData.entries()) {
+                    preparacionCabinaData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, doorOperationsDetails: preparacionCabinaData };
+
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

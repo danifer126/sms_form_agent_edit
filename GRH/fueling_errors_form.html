@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Tanqueo - Operaciones de Vuelo</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Tanqueo de Combustible</h1>
+                <p>Registro detallado de evento durante el tanqueo</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Tanqueo</div>
+        </div>
+
+        <form id="fuelForm">
+            <!-- Información del Evento de Tanqueo -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Evento de Tanqueo</h2>
+                    <p>Complete los detalles específicos del evento durante el tanqueo</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <!-- P_FUEL_001 -->
+                        <div class="form-group">
+                            <label for="P_FUEL_001">¿Qué falla presentó durante el tanqueo? <span class="required">*</span></label>
+                            <select id="P_FUEL_001" name="P_FUEL_001" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Error - discrepancia en comunicaciones tierra – cabina">Error en comunicaciones tierra – cabina</option>
+                                <option value="Errores en ordenes de tanqueo">Error en ordenes de tanqueo</option>
+                                <option value="Uso de orden de tanqueo de otro vuelo">Uso de orden de tanqueo de otro vuelo</option>
+                                <option value="Suministro no acorde a la orden">Suministro de combustible no acorde a la orden</option>
+                                <option value="Rutas de emergencia bloqueadas">Rutas de emergencia bloqueadas</option>
+                                <option value="Falla de equipos de tanqueo">Falla de equipos de tanqueo</option>
+                                <option value="Derrame de combustible">Derrame de combustible</option>
+                                <option value="Combustible contaminado - mala calidad">Combustible contaminado - mala calidad</option>
+                            </select>
+                        </div>
+
+                        <!-- P_FUEL_002 (condicional si P_FUEL_001 = Falla de equipos de tanqueo) -->
+                        <div class="form-group" id="group_P_FUEL_002" style="display:none;">
+                            <label for="P_FUEL_002">¿cuál equipo que presentó la falla? <span class="required">*</span></label>
+                            <select id="P_FUEL_002" name="P_FUEL_002">
+                                <option value="">Seleccione...</option>
+                                <option value="Camión de combustible">Camión de combustible</option>
+                                <option value="Bomba de combustible">Bomba de combustible</option>
+                                <option value="Tapa de la aeronave">Tapa de la aeronave</option>
+                                <option value="Manguera de combustible">Manguera de combustible</option>
+                                <option value="Escalera inadeacuada">Escalera inadeacuada</option>
+                                
+                            </select>
+                        </div>
+
+                        <!-- P_FUEL_003 (condicional si P_FUEL_001 = Errores en ordenes de tanqueo) -->
+                        <div class="form-group" id="group_P_FUEL_003" style="display:none;">
+                            <label for="P_FUEL_003">¿Qué tipo de error observo? <span class="required">*</span></label>
+                            <select id="P_FUEL_003" name="P_FUEL_003">
+                                <option value="">Seleccione...</option>
+                                <option value="Matrícula errónea">Matrícula errónea</option>
+                                <option value="Cantidad de combustible">Cantidad de combustible</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Tanqueo:', data);
+            }
+
+            // Condicionales según P_FUEL_001
+            const selFuel001 = document.getElementById('P_FUEL_001');
+            const group002 = document.getElementById('group_P_FUEL_002');
+            const group003 = document.getElementById('group_P_FUEL_003');
+            const selFuel002 = document.getElementById('P_FUEL_002');
+            const selFuel003 = document.getElementById('P_FUEL_003');
+
+            function toggleConditionals() {
+                const v = selFuel001.value;
+
+                // P_FUEL_002 visible solo si es "Falla de equipos de tanqueo"
+                const show002 = v === 'Falla de equipos de tanqueo';
+                group002.style.display = show002 ? 'block' : 'none';
+                selFuel002.required = show002;
+                if (!show002) selFuel002.value = '';
+
+                // P_FUEL_003 visible solo si es "Errores en ordenes de tanqueo"
+                const show003 = v === 'Errores en ordenes de tanqueo';
+                group003.style.display = show003 ? 'block' : 'none';
+                selFuel003.required = show003;
+                if (!show003) selFuel003.value = '';
+            }
+
+            selFuel001.addEventListener('change', toggleConditionals);
+            toggleConditionals(); // estado inicial
+
+            // Submit
+            document.getElementById('fuelForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const fuelData = {};
+                for (const [key, value] of formData.entries()) {
+                    fuelData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, fuelDetails: fuelData };
+
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario GPWS - Operaciones de Vuelo</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .checkbox-item:hover {
+            background: #eef6ff;
+            border-color: #3399ff;
+        }
+        .checkbox-item input {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="logo">✈</div>
+        <div>
+            <h1>GPWS (Ground Proximity Warning System)</h1>
+            <p>Registro detallado de evento GPWS</p>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <!-- Barra de progreso -->
+    <div class="progress-indicator">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 50%;"></div>
+        </div>
+        <div class="step-text">Paso 3 de 6: Información Específica - GPWS</div>
+    </div>
+
+    <form id="gpwsForm">
+        <!-- Información del Evento GPWS -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Información del Evento GPWS</h2>
+                <p>Complete los detalles específicos del evento GPWS</p>
+            </div>
+            
+            <div class="card-body">
+                <div class="form-group full-width">
+                    <label>¿Qué mensajes sonoros emitió el GPWS? <span class="required">*</span></label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Sink Rate">Sink Rate</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Pull Up">Pull Up</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Terrain Terrain">Terrain Terrain</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Don't Sink">Don't Sink</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Too low Gear">Too low Gear</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Too low Flaps">Too low Flaps</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Too low Terrain">Too low Terrain</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Glideslope">Glideslope</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Bank Angle">Bank Angle</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Caution Terrain">Caution Terrain</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Caution Obstacle">Caution Obstacle</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Terrain ahead">Terrain ahead</label>
+                        <label class="checkbox-item"><input type="checkbox" name="affectedSystems" value="Obstacle ahead">Obstacle ahead</label>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Botones de navegación -->
+        <div class="card">
+            <div class="card-body">
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                    <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const savedData = sessionStorage.getItem('flightEventData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        console.log('Datos cargados para GPWS:', data);
+    }
+
+    document.getElementById('gpwsForm').addEventListener('submit', handleFormSubmit);
+
+    function handleFormSubmit(e) {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const gpwsData = {};
+        
+        for (let [key, value] of formData.entries()) {
+            if (gpwsData[key]) {
+                if (!Array.isArray(gpwsData[key])) {
+                    gpwsData[key] = [gpwsData[key]];
+                }
+                gpwsData[key].push(value);
+            } else {
+                gpwsData[key] = value;
+            }
+        }
+
+        const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+        const combinedData = { ...existingData, gpwsDetails: gpwsData };
+        
+        sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+        window.location.href = '../title_desc.html';
+    }
+});
+</script>
+</body>
+</html>

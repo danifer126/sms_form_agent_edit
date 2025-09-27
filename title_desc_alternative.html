@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Reporte - Sistema de Seguridad Operacional</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Sistema de Reportes de Seguridad Operacional</h1>
+                <p>Registro de Eventos y Peligros</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="step-text">Paso 4 de 6: Detalles del Reporte</div>
+        </div>
+
+        <!-- Card: Información del Reporte -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Información del Reporte</h2>
+                <p>Complete los detalles específicos del evento de seguridad operacional reportado</p>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Importante:</strong> Proporcione la mayor cantidad de detalles posible.
+                </div>
+                <form id="reportDetailsForm">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="reportTitle">Título del Reporte <span class="required">*</span></label>
+                            <input type="text" id="reportTitle" name="reportTitle" maxlength="150"
+                                   placeholder="Ejemplo: Incidente durante aproximación en condiciones meteorológicas adversas">
+                            <span class="error-message" id="reportTitleError"></span>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="reportDescription">Descripción Detallada del Evento <span class="required">*</span></label>
+                            <textarea id="reportDescription" name="reportDescription" rows="12" minlength="20"
+                                      placeholder="Describa detalladamente el evento ocurrido"></textarea>
+                            <span class="error-message" id="reportDescriptionError"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Card: Archivos Adjuntos -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Archivos Adjuntos</h2>
+                <p>Adjunte documentos, imágenes, videos u otros archivos relevantes al reporte</p>
+            </div>
+            <div class="card-body">
+                <div class="file-upload-area" id="fileUploadArea">
+                    <div class="file-upload-content">
+                        <div class="file-upload-icon">📎</div>
+                        <p>Haga clic o arrastre archivos aquí</p>
+                    </div>
+                    <input type="file" id="attachments" name="attachments" multiple
+                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.mp4,.avi" style="display:none">
+                    <span class="error-message" id="attachmentsError"></span>
+                </div>
+                <div class="uploaded-files" id="uploadedFiles" style="display:none">
+                    <h4>Archivos Seleccionados:</h4>
+                    <div class="file-list" id="fileList"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="backBtn">Regresar</button>
+                    <button type="button" class="btn" id="continueBtn" disabled>Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function init() {
+            const progressFill = document.getElementById('progressFill');
+            if(progressFill) progressFill.style.width = '66.67%';
+            setupValidation();
+            setupFileUpload();
+            setupButtons();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+        function setupValidation() {
+            const titleInput = document.getElementById('reportTitle');
+            const descInput = document.getElementById('reportDescription');
+            const continueBtn = document.getElementById('continueBtn');
+
+            function validateField(input, minLength=1) {
+                const errorSpan = document.getElementById(input.id + 'Error');
+                if(input.value.trim().length < minLength){
+                    errorSpan.textContent = minLength === 1 ? 'Campo requerido' : `Mínimo ${minLength} caracteres`;
+                    input.classList.add('invalid');
+                    return false;
+                } else {
+                    errorSpan.textContent = '';
+                    input.classList.remove('invalid');
+                    return true;
+                }
+            }
+
+            function validateForm() {
+                const validTitle = validateField(titleInput);
+                const validDesc = validateField(descInput, 20);
+                const isValid = validTitle && validDesc;
+
+                continueBtn.disabled = !isValid;
+                continueBtn.style.opacity = isValid ? '1' : '0.5';
+                continueBtn.style.cursor = isValid ? 'pointer' : 'not-allowed';
+            }
+
+            titleInput.addEventListener('input', validateForm);
+            descInput.addEventListener('input', validateForm);
+            setTimeout(validateForm, 50);
+        }
+
+        function setupFileUpload() {
+            const uploadArea = document.getElementById('fileUploadArea');
+            const fileInput = document.getElementById('attachments');
+            const uploadedFiles = document.getElementById('uploadedFiles');
+            const fileList = document.getElementById('fileList');
+            let filesSelected = [];
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+            uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+            uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+            uploadArea.addEventListener('drop', e => { e.preventDefault(); uploadArea.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+            fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+            function handleFiles(files) {
+                const maxFiles = 5;
+                const maxSize = 10*1024*1024; // 10MB
+                const allowed = ['.pdf','.doc','.docx','.jpg','.jpeg','.png','.mp4','.avi'];
+                for(let f of files){
+                    if(filesSelected.length>=maxFiles) { alert('Máx. 5 archivos'); break; }
+                    const ext = '.'+f.name.split('.').pop().toLowerCase();
+                    if(!allowed.includes(ext)){ alert('Tipo no permitido: '+f.name); continue; }
+                    if(f.size>maxSize){ alert('Archivo muy grande: '+f.name); continue; }
+                    filesSelected.push(f);
+                }
+                updateFileList();
+            }
+
+            function updateFileList(){
+                if(filesSelected.length===0){ uploadedFiles.style.display='none'; return; }
+                uploadedFiles.style.display='block';
+                fileList.innerHTML='';
+                filesSelected.forEach((f,i)=>{
+                    const div = document.createElement('div');
+                    div.className='file-item';
+                    div.innerHTML = `<div>${f.name} (${(f.size/1024/1024).toFixed(2)} MB)</div>
+                                     <button type="button" onclick="removeFile(${i})">Eliminar</button>`;
+                    fileList.appendChild(div);
+                });
+            }
+
+            window.removeFile = function(index){
+                filesSelected.splice(index,1);
+                updateFileList();
+            }
+        }
+
+        function setupButtons() {
+            const backBtn = document.getElementById('backBtn');
+            const continueBtn = document.getElementById('continueBtn');
+            backBtn.addEventListener('click', () => window.history.back());
+            continueBtn.addEventListener('click', () => {
+                const titleInput = document.getElementById('reportTitle');
+                const descInput = document.getElementById('reportDescription');
+                if(!titleInput.value.trim() || descInput.value.trim().length<20){ return; }
+                const existingData = JSON.parse(sessionStorage.getItem('safetyReportData')||'{}');
+                const newData = {...existingData, report:{title:titleInput.value, description:descInput.value}};
+                sessionStorage.setItem('safetyReportData', JSON.stringify(newData));
+                window.location.href='flight_info.html';
+            });
+        }
+    </script>
+</body>
+</html>

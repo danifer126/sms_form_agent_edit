@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Golpes a la Aeronave - Operaciones en Tierra</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🚛</div>
+            <div>
+                <h1>Golpes a la Aeronave</h1>
+                <p>Registro detallado de impactos a aeronaves durante operaciones en tierra</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Golpes a la Aeronave</div>
+        </div>
+
+        <form id="aircraftStrikesForm">
+            <!-- Información del Movimiento -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Movimiento de la Aeronave</h2>
+                    <p>Detalles sobre la fase durante la cual ocurrió el golpe</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="aircraftPhase">Fase o movimiento de la aeronave <span class="required">*</span></label>
+                        <select id="aircraftPhase" name="aircraftPhase" required>
+                            <option value="">Seleccione...</option>
+                            <option value="parqueo">Parqueo</option>
+                            <option value="traslado">Traslado</option>
+                            <option value="pushback">Pushback</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="equipmentUsed">Equipo con el que se golpeó la aeronave <span class="required">*</span></label>
+                        <select id="equipmentUsed" name="equipmentUsed" required>
+                            <option value="">Seleccione...</option>
+                            <option value="bus_van_carro">Bus - Van - Carro</option>
+                            <option value="montacarga">Montacarga</option>
+                            <option value="conveyor_belt">Conveyor belt</option>
+                            <option value="ulp_pallet">ULP - Pallet</option>
+                            <option value="escalera">Escalera</option>
+                            <option value="camion_servicios">Camión de servicios</option>
+                            <option value="remolque_tractor">Remolque - Tractor</option>
+                            <option value="planta_electrica">Planta eléctrica</option>
+                            <option value="puente_abordaje">Puente de abordaje</option>
+                            <option value="aire_acondicionado">Aire acondicionado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles del Impacto -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Detalles del Impacto</h2>
+                    <p>Información específica sobre el daño causado a la aeronave</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="aircraftPart">Parte de la aeronave golpeada <span class="required">*</span></label>
+                        <select id="aircraftPart" name="aircraftPart" required>
+                            <option value="">Seleccione...</option>
+                            <option value="bodega">Bodega</option>
+                            <option value="estabilizador">Estabilizador</option>
+                            <option value="motor">Motor</option>
+                            <option value="alas">Alas</option>
+                            <option value="puertas">Puertas</option>
+                            <option value="nariz">Nariz</option>
+                            <option value="parabrisas_ventanas">Parabrisas - Ventanas</option>
+                            <option value="antenas_tubo_pitot">Antenas - Tubo Pitot</option>
+                            <option value="fuselaje">Fuselaje</option>
+                        </select>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="equipmentRegistry">Número o registro del equipo involucrado</label>
+                            <input type="text" id="equipmentRegistry" name="equipmentRegistry" placeholder="Ej: MT-001, BUS-005">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eventPosition">Posición en la que sucedió el evento</label>
+                            <input type="text" id="eventPosition" name="eventPosition" placeholder="Ej: Gate A12, Plataforma 3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('groundHandlingData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Golpes a la Aeronave:', data);
+            }
+
+            document.getElementById('aircraftStrikesForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const strikeData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    strikeData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('groundHandlingData') || '{}');
+                const combinedData = { ...existingData, aircraftStrikeDetails: strikeData };
+                
+                sessionStorage.setItem('groundHandlingData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

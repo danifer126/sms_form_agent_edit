@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario eventos de turbulencia - cabina de mando</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Turbulencia</h1>
+                <p>Registro detallado de evento de turbulencia</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Turbulencia</div>
+        </div>
+
+        <form id="turbulenceForm">
+            <!-- Información del Evento TCAS RA -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información del Evento de Turbulencia</h2>
+                    <p>Complete los detalles específicos de la turbulencia</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="turbulenceType">¿Cuál fue el tipo de turbulencia? <span class="required">*</span></label>
+                            <select id="turbulenceType" name="turbulenceType" required>
+                                <option value="">Seleccione...</option>
+                                <option value="convective">Convectiva (relacionada con corrientes ascendentes)</option>
+                                <option value="mecanic"> Mecánica (cercana al terreno o montañas)</option>
+                                <option value="clearAir">De aire claro (sin nubes visibles)</option>
+                                <option value="stella">De estela (producida por otra aeronave)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="intesity">¿Cómo clasificaría la intensidad? <span class="required">*</span></label>
+                            <select id="intesity" name="intesity" required>
+                                <option value="">Seleccione...</option>
+                                <option value="ligera">Ligera</option>
+                                <option value="moderada">Moderada</option>
+                                <option value="severa">Severa</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="seatBeltSignal">¿Durante el evento ¿la señal de cinturones estaba encendida? <span class="required">*</span></label>
+                        <select id="seatBeltSignal" name="seatBeltSignal" required>
+                            <option value="">Seleccione...</option>
+                            <option value="seatBeltSignalTrue">Si</option>
+                            <option value="seatBeltSignalFalse"> No</option>
+                        </select>
+                    </div>
+                   
+                    <div class="form-group">
+                        <label for="tripInjured">¿Hubo personas lesionadas a bordo?<span class="required">*</span></label>
+                        <select id="tripInjured" name="tripInjured" required>
+                            <option value="">Seleccione...</option>
+                            <option value="injuredTrue">Si</option>
+                            <option value="injuredFalse">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información de la Otra Aeronave -->
+            
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para turbulencia:', data);
+            }
+
+            document.getElementById('turbulenceForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const tcasRaData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    tcasRaData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, turbulenceDetails: tcasRaData };
+
+                
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

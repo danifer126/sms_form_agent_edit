@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario FLT - Manuals</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">📘</div>
+            <div>
+                <h1>Manuals</h1>
+                <p>Registro detallado de evento relacionado con manuales</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Manuals</div>
+        </div>
+
+        <form id="manualsForm">
+            <!-- Información del Evento Manuals -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información sobre Manuales</h2>
+                    <p>Complete los detalles específicos del evento</p>
+                </div>
+                <div class="card-body">
+
+                    <div class="form-group full-width">
+                        <label for="manualType">Tipo de manual involucrado <span class="required">*</span></label>
+                        <select id="manualType" name="manualType" required>
+                            <option value="">Seleccione...</option>
+                            <option value="fcom">FCOM</option>
+                            <option value="sop">SOP</option>
+                            <option value="checklist">Checklist</option>
+                            <option value="mmo">MMO</option>
+                            <option value="other">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="manualIssue">¿Qué problema se presentó con el manual? <span class="required">*</span></label>
+                        <select id="manualIssue" name="manualIssue" required>
+                            <option value="">Seleccione...</option>
+                            <option value="missing">Ausencia de información</option>
+                            <option value="ambiguous">Ambigüedad</option>
+                            <option value="outdated">Información desactualizada</option>
+                            <option value="not_applicable">No aplicable</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="crewAction">Acción de la tripulación respecto al manual</label>
+                        <textarea id="crewAction" name="crewAction" rows="3" placeholder="Describa las acciones realizadas"></textarea>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Impacto Operacional -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Impacto Operacional</h2>
+                    <p>Consecuencias del problema con manuales</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group full-width">
+                        <label for="operationalImpact">Impacto en la operación</label>
+                        <select id="operationalImpact" name="operationalImpact">
+                            <option value="">Seleccione...</option>
+                            <option value="none">Ninguno</option>
+                            <option value="delay">Retraso</option>
+                            <option value="diversion">Desvío</option>
+                            <option value="cancellation">Cancelación</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="safetyImpact">¿Hubo algún impacto en la seguridad operacional?</label>
+                        <select id="safetyImpact" name="safetyImpact">
+                            <option value="">Seleccione...</option>
+                            <option value="yes">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="observations">Observaciones adicionales</label>
+                        <textarea id="observations" name="observations" rows="3" placeholder="Incluya cualquier detalle relevante"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Manuals:', data);
+            }
+
+            document.getElementById('manualsForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const manualsData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    manualsData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, manualsDetails: manualsData };
+                
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

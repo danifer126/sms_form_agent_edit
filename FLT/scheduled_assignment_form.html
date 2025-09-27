@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario FLT - Scheduled Assignment</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">📋</div>
+            <div>
+                <h1>Scheduled Assignment</h1>
+                <p>Registro detallado de evento de asignación programada</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 6: Información Específica - Scheduled Assignment</div>
+        </div>
+
+        <form id="scheduledAssignmentForm">
+          
+            <!-- Información Adicional de Salud -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Información Adicional</h2>
+                    <p>Situaciones personales o de salud que puedan afectar el desempeño</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="healthSituation">¿Actualmente tiene alguna situación personal o de salud que pueda afectar tu desempeño y horas de sueño? <span class="required">*</span></label>
+                            <select id="healthSituation" name="healthSituation" required>
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="wantsContact">¿Desea ser contactado por el equipo de salud? <span class="required">*</span></label>
+                            <select id="wantsContact" name="wantsContact" required>
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Scheduled Assignment:', data);
+            }
+
+            document.getElementById('scheduledAssignmentForm').addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const scheduledAssignmentData = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    scheduledAssignmentData[key] = value;
+                }
+
+                const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+                const combinedData = { ...existingData, scheduledAssignmentDetails: scheduledAssignmentData };
+                
+                sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+                window.location.href = '../title_desc.html';
+            }
+        });
+    </script>
+</body>
+</html>

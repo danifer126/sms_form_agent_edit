@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Aproximación y Contacto Anormal - Operaciones de Vuelo</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">✈</div>
+            <div>
+                <h1>Aproximación y Contacto Anormal con Pista</h1>
+                <p>Registro detallado de evento durante aproximación y contacto con pista</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de progreso -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%;"></div>
+            </div>
+            <div class="step-text">Paso 3 de 5: Información Específica - Aproximación y Contacto Anormal</div>
+        </div>
+
+        <form id="runwayAbnormalForm">
+
+           
+            <!-- Detalles del Contacto Anormal -->
+            <div class="card" id="contactoAbnormalDetails">
+                <div class="card-header">
+                    <h2>Detalles del Contacto Anormal</h2>
+                    <p>Información específica sobre el contacto anormal con la pista</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="faseEvento">¿El evento ocurrió durante el despegue o el aterrizaje? <span class="required">*</span></label>
+                            <select id="faseEvento" name="faseEvento" onchange="toggleFaseDetails()">
+                                <option value="">Seleccione...</option>
+                                <option value="despegue">Despegue</option>
+                                <option value="aterrizaje">Aterrizaje</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="superficiePista">¿Cómo estaba la superficie de la pista? <span class="required">*</span></label>
+                            <select id="superficiePista" name="superficiePista">
+                                <option value="">Seleccione...</option>
+                                <option value="seca">Seca</option>
+                                <option value="mojada">Mojada</option>
+                                <option value="contaminada">Contaminada (agua, nieve, aceite)</option>
+                                <option value="otra">Otra</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Detalles del Despegue -->
+                    <div class="form-group full-width" id="despegueDetails" style="display: none;">
+                        <label for="eventosDespegue">¿Qué sucedió durante el despegue? <span class="required">*</span></label>
+                        <select id="eventosDespegue" name="eventosDespegue">
+                            <option value="">Seleccione...</option>
+                            <option value="configuracion_incorrecta">Configuración de despegue incorrecta</option>
+                            <option value="despegue_cancelado">Despegue cancelado (RTO)</option>
+                            <option value="golpe_cola">Golpe de cola (Tail Strike)</option>
+                            <option value="distancia_excesiva">Distancia de despegue excesiva</option>
+                            <option value="desviacion_lateral">Desviación lateral al despegar</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <!-- Detalles del Aterrizaje -->
+                    <div class="form-group full-width" id="aterrizajeDetails" style="display: none;">
+                        <label for="eventosAterrizaje">¿Qué suceso ocurrió durante el aterrizaje? <span class="required">*</span></label>
+                        <select id="eventosAterrizaje" name="eventosAterrizaje">
+                            <option value="">Seleccione...</option>
+                            <option value="aterrizaje_largo">Aterrizaje largo (Long landing)</option>
+                            <option value="aterrizaje_corto">Aterrizaje corto (Short landing)</option>
+                            <option value="contacto_nariz">Contacto con el tren de nariz (Nose Landing)</option>
+                            <option value="aterrizaje_duro">Aterrizaje duro (Hard Landing)</option>
+                            <option value="rebote_toque">Rebote tras el toque (Bounced Landing)</option>
+                            <option value="desvio_lateral">Desvío lateral al aterrizar</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="history.back()" style="background: var(--text-gray);">Regresar</button>
+                        <button type="submit" class="btn">Continuar a Descripción del Evento</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = sessionStorage.getItem('flightEventData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                console.log('Datos cargados para Aproximación y Contacto Anormal:', data);
+                
+                // Determinar qué tipo de evento fue seleccionado previamente
+                if (data.eventDetails && data.eventDetails.specificEvent) {
+                    const eventType = data.eventDetails.specificEvent;
+                    showRelevantSections(eventType);
+                }
+            }
+
+            document.getElementById('runwayAbnormalForm').addEventListener('submit', handleFormSubmit);
+        });
+
+        function showRelevantSections(eventType) {
+            const sobrepasoDetails = document.getElementById('sobrepasoDetails');
+            const inestableDetails = document.getElementById('inestableDetails');
+            const contactoAbnormalDetails = document.getElementById('contactoAbnormalDetails');
+
+            // Ocultar todas las secciones inicialmente
+            sobrepasoDetails.style.display = 'none';
+            inestableDetails.style.display = 'none';
+            contactoAbnormalDetails.style.display = 'none';
+
+            // Mostrar secciones según el tipo de evento seleccionado previamente
+            if (eventType === 'sobrepaso') {
+                sobrepasoDetails.style.display = 'block';
+            } else if (eventType === 'aproximacion_inestable_aterrizaje') {
+                inestableDetails.style.display = 'block';
+            } else if (eventType === 'contacto_anormal_pista') {
+                contactoAbnormalDetails.style.display = 'block';
+            }
+        }
+
+        function toggleInestableFromSobrepaso() {
+            const sobrepasoReason = document.getElementById('sobrepasoReason').value;
+            const inestableDetails = document.getElementById('inestableDetails');
+            
+            if (sobrepasoReason === 'parametros_aproximacion_inestables') {
+                inestableDetails.style.display = 'block';
+            } else {
+                inestableDetails.style.display = 'none';
+            }
+        }
+
+        function toggleFaseDetails() {
+            const faseEvento = document.getElementById('faseEvento').value;
+            const despegueDetails = document.getElementById('despegueDetails');
+            const aterrizajeDetails = document.getElementById('aterrizajeDetails');
+
+            despegueDetails.style.display = 'none';
+            aterrizajeDetails.style.display = 'none';
+
+            if (faseEvento === 'despegue') {
+                despegueDetails.style.display = 'block';
+                // Hacer requerido
+                document.getElementById('eventosDespegue').required = true;
+                document.getElementById('eventosAterrizaje').required = false;
+            } else if (faseEvento === 'aterrizaje') {
+                aterrizajeDetails.style.display = 'block';
+                // Hacer requerido
+                document.getElementById('eventosAterrizaje').required = true;
+                document.getElementById('eventosDespegue').required = false;
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const runwayAbnormalData = {};
+            
+            // Procesar datos normales
+            for (let [key, value] of formData.entries()) {
+                if (key === 'criteriosInestable') {
+                    // Manejar checkboxes múltiples
+                    if (!runwayAbnormalData[key]) {
+                        runwayAbnormalData[key] = [];
+                    }
+                    runwayAbnormalData[key].push(value);
+                } else {
+                    runwayAbnormalData[key] = value;
+                }
+            }
+
+            // Procesar checkboxes si no se seleccionó ninguno
+            if (!runwayAbnormalData['criteriosInestable']) {
+                runwayAbnormalData['criteriosInestable'] = [];
+            }
+
+            const existingData = JSON.parse(sessionStorage.getItem('flightEventData') || '{}');
+            const combinedData = { ...existingData, runwayAbnormalDetails: runwayAbnormalData };
+            
+            sessionStorage.setItem('flightEventData', JSON.stringify(combinedData));
+            window.location.href = '../title_desc.html';
+        }
+    </script>
+
+    <style>
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            color: var(--text-dark);
+        }
+
+        .checkbox-item:hover .checkmark {
+            color: var(--primary-color);
+        }
+
+        .checkbox-item input[type="checkbox"]:checked + .checkmark {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+    </style>
+</body>
+</html>
